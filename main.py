@@ -141,7 +141,7 @@ async def on_message(message):
 
     if message.content.startswith("-about"):
 
-        aboutEmbed = discord.Embed(title='About Cassandra', description="Custom Discord Bot", url="https://github.com/Avinch/CassandraBotPy", color=discord.Color.gold())
+        aboutEmbed = discord.Embed(title='About Cassandra', description="Custom Discord Bot", url="https://github.com/Avinch/CassBotPy", color=discord.Color.gold())
         aboutEmbed.set_footer(text="version 1.0")
         aboutEmbed.set_thumbnail(url=client.user.avatar_url)
         await client.send_message(message.channel, embed=aboutEmbed)
