@@ -1,2 +1,2 @@
 # CassBotPy
-STUFF
+THINGS
