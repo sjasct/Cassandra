@@ -36,35 +36,25 @@ async def on_message(message):
 
     # System;Start #1
     if "cassandra can you hear me" in message.content.lower():
-
         #NOT WORKING ATM
         #if message.author.voice.voice_channel == None:
-
         if True:
-
             await client.send_message(message.channel, "Yes.")
-
             logMsg = message.author.name + " asked Cassandra if she could hear them (text)"
             log(logMsg)
-
         '''else:
-
             vc = discord.utils.get(message.server.channels, id=message.author.voice.voice_channel.id)
             voice = await client.join_voice_channel(vc)
             player = voice.create_ffmpeg_player('ss1.mp3')
             player.start()
             time.sleep(4)
             await voice.disconnect()
-
             logMsg = message.author.name + " asked Cassandra if she could hear them (voice)"
             log(logMsg)'''
-
     # System;Start #2
     if "cassandra are you ready to begin" in message.content.lower():
-
         # NOT WORKING ATM
         #if message.author.voice.voice_channel == None:
-
         if True:
             await client.send_message(message.channel, "Yes,")
             time.sleep(1)
@@ -72,16 +62,13 @@ async def on_message(message):
 
             logMsg = message.author.name + " asked Cassandra if she was ready to begin (text)"
             log(logMsg)
-
         '''else:
-
             vc = discord.utils.get(message.server.channels, id=message.author.voice.voice_channel.id)
             voice = await client.join_voice_channel(vc)
             player = voice.create_ffmpeg_player('ss2.mp3')
             player.start()
             time.sleep(5)
             await voice.disconnect()
-
             logMsg = message.author.name + " asked Cassandra if she was ready to begin (voice)"
             log(logMsg)'''
 #Commands
