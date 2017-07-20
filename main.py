@@ -4,9 +4,13 @@ import websockets
 import authDeets
 import datetime
 import time
+from discord.ext import commands
+import random
+import logging
 
-
-client = discord.Client()
+description = '''Cassandra Help'''
+client = commands.Bot(command_prefix='-', description=description)
+bot = client
 
 @client.event
 async def on_ready():
@@ -80,73 +84,48 @@ async def on_message(message):
 
             logMsg = message.author.name + " asked Cassandra if she was ready to begin (voice)"
             log(logMsg)'''
+#Commands
+    #Ping Command
+@bot.command(pass_context = True)
+async def role(ctx, action : str, role : str):
+    acceptableRoles = ["battlenet", "ping"]
+    acceptableTypes = ["add", "remove", "+", "-"]
 
-    # role addition/removal
-    if message.content.startswith("-role"):
-
-        acceptableRoles = ["battlenet", "ping"]
-        acceptableTypes = ["add", "remove", "+", "-"]
-
-        command = message.content.split(" ")
-
-        if(command[1] in acceptableTypes and command[2] in acceptableRoles):
-
-            if command[1] == "add" or command[1] == "+":
-
-                try:
-
-                    await client.add_roles(message.author, discord.utils.get(message.server.roles, name=command[2]))
-
-                except:
-
-                    await client.send_message(message.channel, "Failed to add `" + command[2] + "` role to " + message.author.name)
-
-                    logMsg = message.author.name + " failed to add the " + command[2] + "role to themselves"
-                    log(logMsg)
-
-                finally:
-
-                    await client.send_message(message.channel, "Successfully added `" + command[2] + " ` role to " + message.author.name)
-
-                    logMsg = message.author.name + " added the " + command[2] + "role to themselves"
-                    log(logMsg)
-
-            else:
-
-                try:
-
-                    await client.remove_roles(message.author, discord.utils.get(message.server.roles, name=command[2]))
-
-                except:
-
-                    await client.send_message(message.channel, "Failed to remove `" + command[2] + "` role from " + message.author.name)
-
-                    logMsg = message.author.name + " failed to remove the " + command[2] + "role from themselves"
-                    log(logMsg)
-
-                finally:
-
-                    await client.send_message(message.channel, "Successfully removed `" + command[2] + " ` role from " + message.author.name)
-
-                    logMsg = message.author.name + " removed the " + command[2] + "role from themselves"
-                    log(logMsg)
-
-        elif command[1] not in acceptableTypes:
-
-            await client.send_message(message.channel, "Invalid parameter!")
-
-        elif command[1] in acceptableTypes and command[2] not in acceptableRoles:
-
-            await client.send_message(message.channel, "Invalid role!")
-
-    if message.content.startswith("-about"):
-
-        aboutEmbed = discord.Embed(title='About Cassandra', description="Custom Discord Bot", url="https://github.com/Avinch/CassBotPy", color=discord.Color.gold())
-        aboutEmbed.set_footer(text="version 1.0")
-        aboutEmbed.set_thumbnail(url=client.user.avatar_url)
-        await client.send_message(message.channel, embed=aboutEmbed)
-
-
+    if(action in acceptableTypes and role in acceptableRoles):
+        if action == "add" or action == "+":
+            try:
+                await bot.add_roles(ctx.message.author, discord.utils.get(ctx.message.server.roles, name=role))
+            except:
+                await bot.send_message(ctx.message.channel, "Failed to add `" + role + "` role to " + ctx.message.author.name)
+                logMsg = message.author.name + " failed to add the " + role + " role to themselves"
+                print(logMsg)
+            finally:
+                await bot.send_message(ctx.message.channel, "Successfully added `" + role + " ` role to " + ctx.message.author.name)
+                logMsg = ctx.message.author.name + " added the " + role + " role to themselves"
+                print(logMsg)
+        else:
+            try:
+                await bot.remove_roles(ctx.message.author, discord.utils.get(ctx.message.server.roles, name=role))
+            except:
+                await bot.send_message(ctx.message.channel, "Failed to remove `" + role + "` role from " + ctx.message.author.name)
+                logMsg = ctx.message.author.name + " failed to remove the " + role + " role from themselves"
+                print(logMsg)
+            finally:
+                await bot.send_message(ctx.message.channel, "Successfully removed `" + role + " ` role from " + ctx.message.author.name)
+                logMsg = ctx.message.author.name + " removed the " + role + " role from themselves"
+                print(logMsg)
+    elif action not in acceptableTypes:
+        await bot.send_message(ctx.message.channel, "Invalid parameter!")
+    elif action in acceptableTypes and role not in acceptableRoles:
+        await bot.send_message(ctx.message.channel, "Invalid role!")
+    #About Command
+@bot.command(pass_context = True)
+async def about(ctx):
+    aboutEmbed = discord.Embed(title='About Cassandra', description="Custom Discord Bot", url="https://github.com/Avinch/CassBotPy", color=discord.Color.gold())
+    aboutEmbed.set_footer(text="version 1.0")
+    aboutEmbed.set_thumbnail(url=bot.user.avatar_url) #aboutEmbed.set_thumbnail(url=client.user.avatar_url)
+    await bot.send_message(ctx.message.channel, embed=aboutEmbed) #await client.send_message(message.channel, embed=aboutEmbed)
+    
 def log(message):
     print(datetime.datetime.now(), message)
 
