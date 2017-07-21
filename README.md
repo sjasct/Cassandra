@@ -14,9 +14,11 @@ The command prefix for this bot is '**-**'. If you find any bugs, please do repo
 + **NEW:** Uses Discord.py Commands Function
 
 ## To-do-list
-+ Voice-Chat Capability
-+ More commands
-+ **and much more!**
+- [x] Integration of the onboard discord.py commands function
+- [ ] Voice-Chat Capability
+- [ ] More commands
+
+**and much more!**
 
 [![forthebadge](http://forthebadge.com/images/badges/built-by-developers.svg)](http://forthebadge.com)
 [![forthebadge](http://forthebadge.com/images/badges/made-with-python.svg)](http://forthebadge.com)
