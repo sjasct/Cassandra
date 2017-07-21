@@ -117,7 +117,7 @@ async def about(ctx):
     aboutEmbed.set_thumbnail(url=bot.user.avatar_url) #aboutEmbed.set_thumbnail(url=client.user.avatar_url)
     await bot.send_message(ctx.message.channel, embed=aboutEmbed) #await client.send_message(message.channel, embed=aboutEmbed)
 
-if not discord.opus.is_loaded():
+'''if not discord.opus.is_loaded():
     # the 'opus' library here is opus.dll on windows
     # or libopus.so on linux in the current directory
     # you should replace this with the location the
@@ -345,7 +345,7 @@ class Music:
         else:
             skip_count = len(state.skip_votes)
             await self.bot.say('Now playing {} [skips: {}/3]'.format(state.current, skip_count))
-bot.add_cog(Music(bot))
+bot.add_cog(Music(bot))'''
 
 def log(message):
     print(datetime.datetime.now(), message)
