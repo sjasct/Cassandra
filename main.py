@@ -84,7 +84,7 @@ async def role(ctx, action : str, role : str):
                 await bot.add_roles(ctx.message.author, discord.utils.get(ctx.message.server.roles, name=role))
             except:
                 await bot.send_message(ctx.message.channel, "Failed to add `" + role + "` role to " + ctx.message.author.name)
-                logMsg = message.author.name + " failed to add the " + role + " role to themselves"
+                logMsg = ctx.message.author.name + " failed to add the " + role + " role to themselves"
                 print(logMsg)
             finally:
                 await bot.send_message(ctx.message.channel, "Successfully added `" + role + " ` role to " + ctx.message.author.name)
