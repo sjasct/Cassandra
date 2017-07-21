@@ -12,6 +12,7 @@ import youtube_dl
 description = '''Cassandra Help'''
 client = commands.Bot(command_prefix='-', description=description)
 bot = client
+version = 'version 1.1'
 
 @client.event
 async def on_ready():
@@ -134,7 +135,7 @@ async def stop_voice(ctx):
 async def about(ctx):
     """Tells you about this bot."""
     aboutEmbed = discord.Embed(title='About Cassandra', description="Custom Discord Bot", url="https://github.com/Avinch/CassBotPy", color=discord.Color.gold())
-    aboutEmbed.set_footer(text="version 1.0")
+    aboutEmbed.set_footer(text=version)
     aboutEmbed.set_thumbnail(url=bot.user.avatar_url) #aboutEmbed.set_thumbnail(url=client.user.avatar_url)
     await bot.send_message(ctx.message.channel, embed=aboutEmbed) #await client.send_message(message.channel, embed=aboutEmbed)
 
