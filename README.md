@@ -20,6 +20,12 @@ The command prefix for this bot is '**-**'. If you find any bugs, please do repo
 
 **and much more!**
 
+## Dependencies
++ [python 3.x.x](https://www.python.org/) - [python source](https://github.com/python/cpython), [python Docs](https://docs.python.org/3/)
++ discord.py - [discord.py Source](https://github.com/Rapptz/discord.py), [discord.py Docs](https://discordpy.readthedocs.io)
++ youtube-dl - [youtube-dl Source](https://github.com/rg3/youtube-dl), [youtube-dl Docs](https://github.com/rg3/youtube-dl/blob/master/README.md)
++ [FFmpeg](https://www.FFmpeg.org/) - [FFmpeg Source](https://github.com/FFmpeg/FFmpeg), [FFmpeg Docs](http://ffmpeg.org/documentation.html)
+
 [![forthebadge](http://forthebadge.com/images/badges/built-by-developers.svg)](http://forthebadge.com)
 [![forthebadge](http://forthebadge.com/images/badges/made-with-python.svg)](http://forthebadge.com)
 [![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
