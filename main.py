@@ -14,12 +14,24 @@ client = commands.Bot(command_prefix='-', description=description)
 bot = client
 
 @client.event
+async def on_member_join(member):
+    await bot.add_roles(member, discord.utils.get(member.server.roles, name="Elevens [Users]"))
+
+@client.event
 async def on_ready():
     print("Logged in as")
     print(client.user.name)
     print(client.user.id)
     await client.change_presence(game=discord.Game(name='in a Digital Haunt'))
     print("--")
+
+    if not discord.opus.is_loaded():
+        # the 'opus' library here is opus.dll on windows
+        # or libopus.so on linux in the current directory
+        # you should replace this with the location the
+        # opus library is located in and with the proper filename.
+        # note that on windows this DLL is automatically provided for you
+        discord.opus.load_opus('opus')
 
 @client.event
 async def on_message(message):
@@ -134,9 +146,15 @@ async def stop_voice(ctx):
 async def about(ctx):
     """Tells you about this bot."""
     aboutEmbed = discord.Embed(title='About Cassandra', description="Custom Discord Bot", url="https://github.com/Avinch/CassBotPy", color=discord.Color.gold())
-    aboutEmbed.set_footer(text="version 1.1")
-    aboutEmbed.set_thumbnail(url=bot.user.avatar_url
-    await bot.send_message(ctx.message.channel, embed=aboutEmbed)
+    aboutEmbed.set_footer(text="version 1.1 testing")
+    aboutEmbed.set_thumbnail(url=bot.user.avatar_url) #aboutEmbed.set_thumbnail(url=client.user.avatar_url)
+    await bot.send_message(ctx.message.channel, embed=aboutEmbed) #await client.send_message(message.channel, embed=aboutEmbed)
+
+@bot.command(pass_context = True)
+async def ping(ctx):
+    msgTimeSent = ctx.message.timestamp
+    msgNow = datetime.datetime.now()
+    await bot.send_message(ctx.message.channel, "The message was sent at: " + str(msgNow - msgTimeSent))
 
 def log(message):
     print(datetime.datetime.now(), message)
