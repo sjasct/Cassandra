@@ -17,6 +17,21 @@ bot = client
 async def on_member_join(member):
     await bot.add_roles(member, discord.utils.get(member.server.roles, name="Elevens [Users]"))
 
+    joinEmbed = discord.Embed(title='{}'.format(member) + " has joined the server.",
+                             description='Join Date: {} UTC'.format(member.joined_at), color=discord.Color.green())
+    joinEmbed.set_footer(text="User Joined")
+    joinEmbed.set_thumbnail(url=member.avatar_url)
+    await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=joinEmbed)
+
+@client.event
+async def on_member_remove(member):
+    server = member.server
+    leaveEmbed = discord.Embed(title='{}'.format(member) +  " has left the server.", description= 'Leave Date: {} UTC'.format(datetime.datetime.now()), color=discord.Color.red())
+    leaveEmbed.set_footer(text=datetime.datetime.now())
+    leaveEmbed.set_thumbnail(url=member.avatar_url)
+    await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=leaveEmbed)
+
+
 @client.event
 async def on_ready():
     print("Logged in as")
