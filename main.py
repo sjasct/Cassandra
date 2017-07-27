@@ -161,7 +161,7 @@ async def stop_voice(ctx):
 async def about(ctx):
     """Tells you about this bot."""
     aboutEmbed = discord.Embed(title='About Cassandra', description="Custom Discord Bot", url="https://github.com/Avinch/CassBotPy", color=discord.Color.gold())
-    aboutEmbed.set_footer(text="version 1.1 testing")
+    aboutEmbed.set_footer(text="version 1.2")
     aboutEmbed.set_thumbnail(url=bot.user.avatar_url) #aboutEmbed.set_thumbnail(url=client.user.avatar_url)
     await bot.send_message(ctx.message.channel, embed=aboutEmbed) #await client.send_message(message.channel, embed=aboutEmbed)
 
