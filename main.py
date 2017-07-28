@@ -75,7 +75,7 @@ async def on_member_remove(member):
 async def on_message(message):
     # Ping warning
     # Change last 2 conditionals to single if have mod role but cba atm
-     if ("301392743840874497" in message.content) and message.author.id != client.user.id and message.author.id != "227187657715875841" and message.author.id != "108875988967882752":
+    if ("301392743840874497" in message.content) and message.author.id != client.user.id and message.author.id != "227187657715875841" and message.author.id != "108875988967882752":
         log( 'Ping-Warn ID:' + message.author.id)
         warningPing = "**Do not abuse the ping role!** {}".format(message.author.mention)
         await client.send_message(message.channel, warningPing)
