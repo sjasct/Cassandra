@@ -5,12 +5,12 @@ import authDeets
 import time
 from discord.ext import commands
 import random
-import logging
+#import logging
 import youtube_dl
 import csv
 from threading import Timer
 from datetime import datetime
-from checks import embed_perms, cmd_prefix_len
+#from checks import embed_perms, cmd_prefix_len
 
 description = '''Cassandra Help'''
 client = commands.Bot(command_prefix='-', description=description)
@@ -134,7 +134,7 @@ async def role(ctx, action : str, role : str):
             except:
                 await bot.send_message(ctx.message.channel, "Failed to add `{0}` role to {1}".format(role, ctx.message.author.name))
                 logMsg = "{1} failed to add the {0} role to themselves".format(role, ctx.message.author.name)
-                log(logMsg
+                log(logMsg)
             finally:
                 await bot.send_message(ctx.message.channel, "Successfully added `{0}` role to {1}".format(role, ctx.message.author.name))
                 logMsg = "{1} added the {0} role to themselves".format(role, ctx.message.author.name)
@@ -391,13 +391,13 @@ async def ping_warn(ctx, message):
     mod_watch_warn_embed.set_footer(text='WARNING')
     mod_watch_warn_embed.set_thumbnail(url=ctx.message.author.avatar_url)
     await client.send_message(client.get_channel(warn_channel), embed=mod_watch_warn_embed)
-
+'''
 @bot.command(pass_context = True)
 async def ping(ctx):
     msgTimeSent = ctx.message.timestamp
     msgNow = datetime.datetime.now()
     await bot.send_message(ctx.message.channel, "The message was sent at: " + str(msgNow - msgTimeSent))
-
+'''
 def log(message):
     print(datetime.now(), message)
 
