@@ -15,7 +15,7 @@ from checks import embed_perms, cmd_prefix_len
 description = '''Cassandra Help'''
 client = commands.Bot(command_prefix='-', description=description)
 bot = client
-version = 'Version: 1.2 Release-NC'
+version = 'Version: ' + authDeets.version
 
 @client.event
 async def on_ready():
