@@ -15,13 +15,40 @@ from checks import embed_perms, cmd_prefix_len
 description = '''Cassandra Help'''
 client = commands.Bot(command_prefix='-', description=description)
 bot = client
-version = 'Version: ' + authDeets.version
+version = 'Version: 1.2' 
+
+@client.event
+async def on_member_join(member):
+    await bot.add_roles(member, discord.utils.get(member.server.roles, name="Elevens [Users]"))
+
+    joinEmbed = discord.Embed(title='{}'.format(member) + " has joined the server.",
+                             description='Join Date: {} UTC'.format(member.joined_at), color=discord.Color.green())
+    joinEmbed.set_footer(text="User Joined")
+    joinEmbed.set_thumbnail(url=member.avatar_url)
+    await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=joinEmbed)
+
+@client.event
+async def on_member_remove(member):
+    server = member.server
+    leaveEmbed = discord.Embed(title='{}'.format(member) +  " has left the server.", description= 'Leave Date: {} UTC'.format(datetime.datetime.now()), color=discord.Color.red())
+    leaveEmbed.set_footer(text=datetime.datetime.now())
+    leaveEmbed.set_thumbnail(url=member.avatar_url)
+    await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=leaveEmbed)
+
 
 @client.event
 async def on_ready():
     print("Logged in as: {0}, with the ID of: {1}".format(client.user, client.user.id))
     await client.change_presence(game=discord.Game(name='in a Digital Haunt', url="https://twitch.tv/ghostofsparkles", type=1))
     print("--")
+
+    if not discord.opus.is_loaded():
+        # the 'opus' library here is opus.dll on windows
+        # or libopus.so on linux in the current directory
+        # you should replace this with the location the
+        # opus library is located in and with the proper filename.
+        # note that on windows this DLL is automatically provided for you
+        discord.opus.load_opus('opus')
 
 @client.event
 async def on_member_join(member):
@@ -107,7 +134,7 @@ async def role(ctx, action : str, role : str):
             except:
                 await bot.send_message(ctx.message.channel, "Failed to add `{0}` role to {1}".format(role, ctx.message.author.name))
                 logMsg = "{1} failed to add the {0} role to themselves".format(role, ctx.message.author.name)
-                log(logMsg)
+                log(logMsg
             finally:
                 await bot.send_message(ctx.message.channel, "Successfully added `{0}` role to {1}".format(role, ctx.message.author.name))
                 logMsg = "{1} added the {0} role to themselves".format(role, ctx.message.author.name)
@@ -341,7 +368,7 @@ class Music:
             await self.bot.say('Not playing anything.')
 bot.add_cog(Music(bot))
 
-warn_channel = authDeets.warn_channel
+warn_channel = "modlog"
 mod_watch_list = []
 async def mod_watch_write(ctx, bot):
     mod_watch_list.append(ctx.message.author.id)
@@ -364,6 +391,12 @@ async def ping_warn(ctx, message):
     mod_watch_warn_embed.set_footer(text='WARNING')
     mod_watch_warn_embed.set_thumbnail(url=ctx.message.author.avatar_url)
     await client.send_message(client.get_channel(warn_channel), embed=mod_watch_warn_embed)
+
+@bot.command(pass_context = True)
+async def ping(ctx):
+    msgTimeSent = ctx.message.timestamp
+    msgNow = datetime.datetime.now()
+    await bot.send_message(ctx.message.channel, "The message was sent at: " + str(msgNow - msgTimeSent))
 
 def log(message):
     print(datetime.now(), message)
