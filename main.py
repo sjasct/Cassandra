@@ -5,12 +5,9 @@ import authDeets
 import time
 from discord.ext import commands
 import random
-import logging
 import youtube_dl
 import csv
-from threading import Timer
 from datetime import datetime
-from checks import embed_perms, cmd_prefix_len
 
 description = '''Cassandra Help'''
 client = commands.Bot(command_prefix='-', description=description)
@@ -75,7 +72,7 @@ async def on_member_remove(member):
 async def on_message(message):
     # Ping warning
     # Change last 2 conditionals to single if have mod role but cba atm
-     ("301392743840874497" in message.content) and message.author.id != client.user.id and message.author.id != "227187657715875841" and message.author.id != "108875988967882752":
+    if ("301392743840874497" in message.content) and message.author.id != client.user.id and message.author.id != "227187657715875841" and message.author.id != "108875988967882752":
         log( 'Ping-Warn ID:' + message.author.id)
         warningPing = "**Do not abuse the ping role!** {}".format(message.author.mention)
         await client.send_message(message.channel, warningPing)
@@ -391,12 +388,6 @@ async def ping_warn(ctx, message):
     mod_watch_warn_embed.set_footer(text='WARNING')
     mod_watch_warn_embed.set_thumbnail(url=ctx.message.author.avatar_url)
     await client.send_message(client.get_channel(warn_channel), embed=mod_watch_warn_embed)
-
-@bot.command(pass_context = True)
-async def ping(ctx):
-    msgTimeSent = ctx.message.timestamp
-    msgNow = datetime.datetime.now()
-    await bot.send_message(ctx.message.channel, "The message was sent at: " + str(msgNow - msgTimeSent))
 
 def log(message):
     print(datetime.now(), message)
