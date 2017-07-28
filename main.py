@@ -92,8 +92,8 @@ async def on_message(message):
             log(logMsg)
     await bot.process_commands(message)
 
-    #Commands
-#Ping Command
+    # Commands
+    # Role Command
 @bot.command(pass_context = True)
 async def role(ctx, action : str, role : str):
     """Adds roles that you are eligible for."""
@@ -127,6 +127,8 @@ async def role(ctx, action : str, role : str):
         await bot.send_message(ctx.message.channel, "Invalid parameter!")
     elif action in acceptableTypes and role not in acceptableRoles:
         await bot.send_message(ctx.message.channel, "Invalid role!")
+        
+    # Who am I Command
 @bot.command(pass_context = True)
 async def whoami(ctx):
     """Tells you your identity"""
@@ -144,11 +146,20 @@ async def about(ctx):
     aboutEmbed.set_thumbnail(url=bot.user.avatar_url)
     await bot.send_message(ctx.message.channel, embed=aboutEmbed)
 
+    # User Info Command
 @bot.command()
 async def userinfo(member : discord.Member):
     """Says when a member joined."""
     await bot.say('{0.name} joined in {0.joined_at}'.format(member))
-
+    
+    # Ping Command
+@bot.command(pass_context = True)
+async def ping(ctx):
+    """Pong!"""
+    msgTimeSent = ctx.message.timestamp
+    msgNow = datetime.now()
+    await bot.send_message(ctx.message.channel, "The message was sent at: " + str(msgNow - msgTimeSent))
+    
 class VoiceEntry:
     def __init__(self, message, player):
         self.requester = message.author
@@ -353,13 +364,6 @@ async def ping_warn(ctx, message):
     mod_watch_warn_embed.set_footer(text='WARNING')
     mod_watch_warn_embed.set_thumbnail(url=ctx.message.author.avatar_url)
     await client.send_message(client.get_channel(warn_channel), embed=mod_watch_warn_embed)
-
-@bot.command(pass_context = True)
-async def ping(ctx):
-    """Pong!"""
-    msgTimeSent = ctx.message.timestamp
-    msgNow = datetime.now()
-    await bot.send_message(ctx.message.channel, "The message was sent at: " + str(msgNow - msgTimeSent))
 
 def log(message):
     print(datetime.now(), message)
