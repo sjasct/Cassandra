@@ -2,36 +2,58 @@ import discord
 import asyncio
 import websockets
 import authDeets
-import datetime
 import time
 from discord.ext import commands
 import random
 import logging
 import youtube_dl
+import csv
+from threading import Timer
+from datetime import datetime
+from checks import embed_perms, cmd_prefix_len
 
 description = '''Cassandra Help'''
 client = commands.Bot(command_prefix='-', description=description)
 bot = client
-version = 'version 1.1'
+version = 'Version: 1.2 Release-NC'
 
 @client.event
 async def on_ready():
-    print("Logged in as")
-    print(client.user.name)
-    print(client.user.id)
-    await client.change_presence(game=discord.Game(name='in a Digital Haunt'))
+    print("Logged in as: {0}, with the ID of: {1}".format(client.user, client.user.id))
+    await client.change_presence(game=discord.Game(name='in a Digital Haunt', url="https://twitch.tv/ghostofsparkles", type=1))
     print("--")
+
+@client.event
+async def on_member_join(member):
+    server = member.server
+    joinEmbed = discord.Embed(title="{} has joined the server.".format(member), description= 'Join Date: {} UTC'.format(member.joined_at), color=discord.Color.green())
+    joinEmbed.set_footer(text='User Joined')
+    joinEmbed.set_thumbnail(url=member.avatar_url)
+    await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=joinEmbed)
+    await bot.add_roles(member, discord.utils.get(member.server.roles, name="Elevens [Users]"))
+    logMsg = "{0} ({0.id}) has just joined {1}. Added the 'Elevens [User]' Role to {0}.".format(member, server)
+    log(logMsg)
+
+@client.event
+async def on_member_remove(member):
+    server = member.server
+    leaveEmbed = discord.Embed(title="{} has left the server.".format(member), description= 'Leave Date: {} UTC'.format(datetime.utcnow()), color=discord.Color.red())
+    leaveEmbed.set_footer(text='User Left')
+    leaveEmbed.set_thumbnail(url=member.avatar_url)
+    await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=leaveEmbed)
+    logMsg = "{0} ({0.id}) has just left {1}.".format(member, server)
+    log(logMsg)
 
 @client.event
 async def on_message(message):
     # Ping warning
-    # change last 2 conditionals to single if have mod role but cba atm
-    if ("301392743840874497" in message.content) and message.author.id != client.user.id and message.author.id != "227187657715875841" and message.author.id != "108875988967882752":
-        print(message.author.id)
-        warningPing = "**Do not abuse the ping role!** " + message.author.mention
+    # Change last 2 conditionals to single if have mod role but cba atm
+     ("301392743840874497" in message.content) and message.author.id != client.user.id and message.author.id != "227187657715875841" and message.author.id != "108875988967882752":
+        log( 'Ping-Warn ID:' + message.author.id)
+        warningPing = "**Do not abuse the ping role!** {}".format(message.author.mention)
         await client.send_message(message.channel, warningPing)
         await client.delete_message(message)
-        logMsg = "!! PING ABUSE !! " + message.author.name + "#" + message.author.discriminator
+        logMsg = "!! PING ABUSE !! {0} ({1})".format(message.author, message.author.id)
         log(logMsg)
 
     # System;Start #1
@@ -39,7 +61,7 @@ async def on_message(message):
         if message.author.voice.voice_channel == None:
             if True:
                 await bot.send_message(message.channel, "Yes.")
-                logMsg = message.author.name + " asked Cassandra if she could hear them (text)"
+                logMsg = "{} asked Cassandra if she could hear them (text)".format(message.author)
                 log(logMsg)
         else:
             vc = discord.utils.get(message.server.channels, id=message.author.voice.voice_channel.id)
@@ -48,7 +70,7 @@ async def on_message(message):
             player.start()
             time.sleep(4)
             await voice.disconnect()
-            logMsg = message.author.name + " asked Cassandra if she could hear them (voice)"
+            logMsg = "{} asked Cassandra if she could hear them (voice)".format(message.author)
             log(logMsg)
     # System;Start #2
     if message.content.lower() == "cassandra are you ready to begin" or message.content.lower() == "are you ready to begin":
@@ -57,7 +79,7 @@ async def on_message(message):
                 await bot.send_message(message.channel, "Yes,")
                 time.sleep(1)
                 await bot.send_message(message.channel, "I'm ready.")
-                logMsg = message.author.name + " asked Cassandra if she was ready to begin (text)"
+                logMsg = "{} asked Cassandra if she was ready to begin (text)".format(message.author)
                 log(logMsg)
         else:
             vc = discord.utils.get(message.server.channels, id=message.author.voice.voice_channel.id)
@@ -66,7 +88,7 @@ async def on_message(message):
             player.start()
             time.sleep(5)
             await voice.disconnect()
-            logMsg = message.author.name + " asked Cassandra if she was ready to begin (voice)"
+            logMsg = "{} asked Cassandra if she was ready to begin (voice)".format(message.author)
             log(logMsg)
     await bot.process_commands(message)
 
@@ -79,105 +101,41 @@ async def role(ctx, action : str, role : str):
     acceptableTypes = ["add", "remove", "+", "-"]
 
     if(action in acceptableTypes and role in acceptableRoles):
-        if action is "add" or action is "+":
+        if action == "add" or action == "+":
             try:
                 await bot.add_roles(ctx.message.author, discord.utils.get(ctx.message.server.roles, name=role))
             except:
-                await say(contextChannel, "Failed to add `" + role + "` role to " + ctx.message.author.name)
-                logMsg = ctx.message.author.name + " failed to add the " + role + " role to themselves"
+                await bot.send_message(ctx.message.channel, "Failed to add `{0}` role to {1}".format(role, ctx.message.author.name))
+                logMsg = "{1} failed to add the {0} role to themselves".format(role, ctx.message.author.name)
                 log(logMsg)
             finally:
-                await bot.send_message(ctx.message.channel, "Successfully added `" + role + " ` role to " + ctx.message.author.name)
-                logMsg = ctx.message.author.name + " added the " + role + " role to themselves"
+                await bot.send_message(ctx.message.channel, "Successfully added `{0}` role to {1}".format(role, ctx.message.author.name))
+                logMsg = "{1} added the {0} role to themselves".format(role, ctx.message.author.name)
                 log(logMsg)
         else:
             try:
                 await bot.remove_roles(ctx.message.author, discord.utils.get(ctx.message.server.roles, name=role))
             except:
-                await bot.send_message(ctx.message.channel, "Failed to remove `" + role + "` role from " + ctx.message.author.name)
-                logMsg = ctx.message.author.name + " failed to remove the " + role + " role from themselves"
+                await bot.send_message(ctx.message.channel, "Failed to remove `{0}` role from {1}".format(role, ctx.message.author.name))
+                logMsg = "{1} failed to remove the {0} role from themselves".format(role, ctx.message.author.name)
                 log(logMsg)
             finally:
-                await bot.send_message(ctx.message.channel, "Successfully removed `" + role + " ` role from " + ctx.message.author.name)
-                logMsg = ctx.message.author.name + " removed the " + role + " role from themselves"
+                await bot.send_message(ctx.message.channel, "Successfully removed `{0}` role from {1}".format(role, ctx.message.author.name))
+                logMsg = "{} removed the {} role from themselves".format(role, ctx.message.author.name)
                 log(logMsg)
     elif action not in acceptableTypes:
         await bot.send_message(ctx.message.channel, "Invalid parameter!")
     elif action in acceptableTypes and role not in acceptableRoles:
         await bot.send_message(ctx.message.channel, "Invalid role!")
 @bot.command(pass_context = True)
-async def playlist(ctx, playlist : str):
-    #youtube_dl.utils.DownloadError: ERROR: Unable to download webpage: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:645)> (caused by URLError(SSLError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:645)'),))
-    #Are you getting the above error? https://github.com/rg3/youtube-dl/issues/11573#issuecomment-269896421
-    playlistAlbums = ['ATLITS', 'MS', 'Blackline', 'Underline', 'LIR']
-    if playlist not in playlistAlbums:
-        bot.send_message(ctx.message.channel, 'You have not chosen a playlist. The playlists are: ATLITS, MS, Blackline, Underline, LIR')
-    elif(playlist in playlistAlbums):
-        if ctx.message.author.voice.voice_channel is None:
-            await bot.send_message(ctx.message.channel, 'You are not in a voice channel.')
-        else:
-            await bot.send_message(ctx.message.channel, 'Please Wait...')
-            if (playlist == "ATLITS"):
-                thePlaylist = "https://www.youtube.com/watch?v=KyUYbAWjdx8"
-                nowPlaying = "All The Lights In The Sky"
-                bot.send_message(ctx.message.channel, 'Now playing the ' + nowPlaying + ' album by Area 11.')
-                vc = ctx.message.author.voice.voice_channel
-                voice = await client.join_voice_channel(vc)
-                player = await voice.create_ytdl_player(thePlaylist)
-                player.start()
-                logMsg = ctx.message.author.name + " started the " + nowPlaying + " playlist in " + ctx.message.author.voice.voice_channel.name + " Voice Channel."
-                log(logMsg)
-                #await bot.send_message(ctx.message.channel, "**[WIP]** As of this update, an official playlist of all of the songs in **All The Lights In The Sky** has not been made. Hopefully by the next update, there will be a playlist of all of the songs in **All The Lights In The Sky**. " + ctx.message.author.mention)
-            elif (playlist == "MS"):
-                thePlaylist = "https://www.youtube.com/watch?v=mmiCnhC0Q-o&ab_channel=ViperFinn"
-                nowPlaying = "Modern Synthesis"
-                bot.send_message(ctx.message.channel, 'Now playing the ' + nowPlaying + ' album by Area 11.')
-                vc = ctx.message.author.voice.voice_channel
-                voice = await client.join_voice_channel(vc)
-                player = await voice.create_ytdl_player(thePlaylist)
-                player.start()
-                logMsg = ctx.message.author.name + " started the " + nowPlaying + " playlist in " + ctx.message.author.voice.voice_channel.name + " Voice Channel." 
-                log(logMsg)
-            elif (playlist == "Blackline"):
-                '''thePlaylist = "NULL"
-                vc = ctx.message.author.voice.voice_channel
-                voice = await client.join_voice_channel(vc)
-                player = await voice.create_ytdl_player(thePlaylist)
-                logMsg = ctx.message.author.name + " started the " + playlist + " playlist in " + ctx.message.author.voice.voice_channel.name + " Voice Channel." 
-                log(logMsg)
-                player.start()
-                nowPlaying = "Blackline"'''
-                await bot.send_message(ctx.message.channel, "**[WIP]** As of this update, an official playlist of all of the songs in **Blackline EP** has not been made. Hopefully by the next update, there will be a playlist of all of the songs in **Blackline EP**. " + ctx.message.author.mention)
-            elif (playlist == "Underline"):
-                '''thePlaylist = "NULL"
-                vc = ctx.message.author.voice.voice_channel
-                voice = await client.join_voice_channel(vc)
-                player = await voice.create_ytdl_player(thePlaylist)
-                logMsg = ctx.message.author.name + " started the " + playlist + " playlist in " + ctx.message.author.voice.voice_channel.name + " Voice Channel." 
-                log(logMsg)
-                player.start()
-                nowPlaying = "Underline"'''
-                await bot.send_message(ctx.message.channel, "**[WIP]** As of this update, an official playlist of all of the songs in **Underline** has not been made. Hopefully by the next update, there will be a playlist of all of the songs in **Underline**. " + ctx.message.author.mention)
-            elif (playlist == "LIR"):
-                '''thePlaylist = "NULL"
-                vc = ctx.message.author.voice.voice_channel
-                voice = await client.join_voice_channel(vc)
-                player = await voice.create_ytdl_player(thePlaylist)
-                logMsg = ctx.message.author.name + " started the " + playlist + " playlist in " + ctx.message.author.voice.voice_channel.name + " Voice Channel." 
-                log(logMsg)
-                player.start()
-                nowPlaying = "Let It Resonate"'''
-                await bot.send_message(ctx.message.channel, "**[WIP]** As of this update, an official playlist of all of the songs in **Let It Resonate** has not been made. Hopefully by the next update, there will be a playlist of all of the songs in **Let It Resonate**. " + ctx.message.author.mention)
-#NOT WORKING ATM
-'''@bot.command(pass_context = True)
-async def stop_voice(ctx):
-    if client.is_voice_connected(ctx.message.server) is False:
-        await bot.send_message(ctx.message.channel, 'I am not in a voice channel.')
-    else:
-        await bot.send_message(ctx.message.channel, 'Stopping...')
-        await client.voice.disconnect()
-        await bot.send_message(ctx.message.channel, 'L' + stopVoiceChannelName)'''
-    #About Command
+async def whoami(ctx):
+    """Tells you your identity"""
+    whoamiEmbed = discord.Embed(title="{}'s Information".format(ctx.message.author.name), description='Join Date: {0.joined_at} \n User ID: {0.id} \n Discriminator: {0.discriminator}'.format(ctx.message.author), color=discord.Color.gold())
+    whoamiEmbed.set_footer(text=version)
+    whoamiEmbed.set_thumbnail(url=ctx.message.author.avatar_url)
+    await bot.send_message(ctx.message.channel, embed=whoamiEmbed)
+
+    # About Command
 @bot.command(pass_context = True)
 async def about(ctx):
     """Tells you about this bot."""
@@ -186,7 +144,224 @@ async def about(ctx):
     aboutEmbed.set_thumbnail(url=bot.user.avatar_url)
     await bot.send_message(ctx.message.channel, embed=aboutEmbed)
 
+@bot.command()
+async def userinfo(member : discord.Member):
+    """Says when a member joined."""
+    await bot.say('{0.name} joined in {0.joined_at}'.format(member))
+
+class VoiceEntry:
+    def __init__(self, message, player):
+        self.requester = message.author
+        self.channel = message.channel
+        self.player = player
+
+    def __str__(self):
+        fmt = '*{0.title}* uploaded by {0.uploader} and requested by {1.display_name}'
+        duration = self.player.duration
+        if duration:
+            fmt = fmt + ' [length: {0[0]}m {0[1]}s]'.format(divmod(duration, 60))
+        return fmt.format(self.player, self.requester)
+
+class VoiceState:
+    def __init__(self, bot):
+        self.current = None
+        self.voice = None
+        self.bot = bot
+        self.play_next_song = asyncio.Event()
+        self.songs = asyncio.Queue()
+        self.audio_player = self.bot.loop.create_task(self.audio_player_task())
+
+    def is_playing(self):
+        if self.voice is None or self.current is None:
+            return False
+
+        player = self.current.player
+        return not player.is_done()
+
+    @property
+    def player(self):
+        return self.current.player
+
+    def toggle_next(self):
+        self.bot.loop.call_soon_threadsafe(self.play_next_song.set)
+
+    async def audio_player_task(self):
+        while True:
+            self.play_next_song.clear()
+            self.current = await self.songs.get()
+            await self.bot.send_message(self.current.channel, 'Now playing ' + str(self.current))
+            self.current.player.start()
+            await self.play_next_song.wait()
+
+class Music:
+    """Voice related commands.
+    Works in multiple servers at once.
+    """
+    def __init__(self, bot):
+        self.bot = bot
+        self.voice_states = {}
+
+    def get_voice_state(self, server):
+        state = self.voice_states.get(server.id)
+        if state is None:
+            state = VoiceState(self.bot)
+            self.voice_states[server.id] = state
+
+        return state
+
+    async def create_voice_client(self, channel):
+        voice = await self.bot.join_voice_channel(channel)
+        state = self.get_voice_state(channel.server)
+        state.voice = voice
+
+    def __unload(self):
+        for state in self.voice_states.values():
+            try:
+                state.audio_player.cancel()
+                if state.voice:
+                    self.bot.loop.create_task(state.voice.disconnect())
+            except:
+                pass
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def join(self, ctx, *, channel : discord.Channel):
+        """Joins a voice channel."""
+        try:
+            await self.create_voice_client(channel)
+        except discord.ClientException:
+            await self.bot.say('Already in a voice channel...')
+        except discord.InvalidArgument:
+            await self.bot.say('This is not a voice channel...')
+        else:
+            await self.bot.say('Ready to play audio in ' + channel.name)
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def summon(self, ctx):
+        """Summons the bot to join your voice channel."""
+        summoned_channel = ctx.message.author.voice_channel
+        if summoned_channel is None: 
+            await self.bot.say('You are not in a voice channel.')
+            return False
+
+        state = self.get_voice_state(ctx.message.server)
+        if state.voice is None:
+            state.voice = await self.bot.join_voice_channel(summoned_channel)
+        else:
+            await state.voice.move_to(summoned_channel)
+
+        return True
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def play(self, ctx, *, song : str):
+        """Plays a song."""
+        state = self.get_voice_state(ctx.message.server)
+        opts = {
+            'default_search': 'auto',
+            'quiet': True,
+        }
+
+        if state.voice is None:
+            success = await ctx.invoke(self.summon)
+            if not success:
+                return
+
+        try:
+            player = await state.voice.create_ytdl_player(song, ytdl_options=opts, after=state.toggle_next)
+        except Exception as e:
+            fmt = 'An error occurred while processing this request: ```py\n{}: {}\n```'
+            await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
+        else:
+            player.volume = 0.6
+            entry = VoiceEntry(ctx.message, player)
+            await self.bot.say('Enqueued ' + str(entry))
+            await state.songs.put(entry)
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def volume(self, ctx, value : int):
+        """Sets the volume of the currently playing song."""
+
+        state = self.get_voice_state(ctx.message.server)
+        if state.is_playing():
+            player = state.player
+            player.volume = value / 100
+            await self.bot.say('Set the volume to {:.0%}'.format(player.volume))
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def pause(self, ctx):
+        """Pauses the currently played song."""
+        state = self.get_voice_state(ctx.message.server)
+        if state.is_playing():
+            player = state.player
+            player.pause()
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def resume(self, ctx):
+        """Resumes the currently played song."""
+        state = self.get_voice_state(ctx.message.server)
+        if state.is_playing():
+            player = state.player
+            player.resume()
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def stop(self, ctx):
+        """Stops playing audio and leaves the voice channel.
+        This also clears the queue.
+        """
+        server = ctx.message.server
+        state = self.get_voice_state(server)
+
+        if state.is_playing():
+            player = state.player
+            player.stop()
+
+        try:
+            state.audio_player.cancel()
+            del self.voice_states[server.id]
+            await state.voice.disconnect()
+        except:
+            pass
+
+    @commands.command(pass_context=True, no_pm=True)
+    async def playing(self, ctx):
+        """Shows info about the currently played song."""
+
+        state = self.get_voice_state(ctx.message.server)
+        if state.current is None:
+            await self.bot.say('Not playing anything.')
+bot.add_cog(Music(bot))
+
+warn_channel = authDeets.warn_channel
+mod_watch_list = []
+async def mod_watch_write(ctx, bot):
+    mod_watch_list.append(ctx.message.author.id)
+    if mod_watch_list.count(ctx.message.author.id) == 1:
+        logMsg = ctx.message.author.id + '(`' + ctx.message.author.mention + '`) has been added to the mod watch list.'
+        log(logMsg)
+        await ping_warn(ctx, logMsg)
+    if mod_watch_list.count(ctx.message.author.id) == 2:
+        logMsg = ctx.message.author.id + '(`' + ctx.message.author.mention + '`) has been found twice on the list!'
+        log(logMsg)
+        await ping_warn(ctx, logMsg)
+    if mod_watch_list.count(ctx.message.author.id) >= 3:
+        id_occurances = mod_watch_list.count(ctx.message.author.id)
+        logMsg = ctx.message.author.id + '(`' + ctx.message.author.mention + '`) has been found more than twice on the list! Action must be taken imminently!'
+        log(logMsg)
+        await ping_warn(ctx, logMsg)
+
+async def ping_warn(ctx, message):
+    mod_watch_warn_embed = discord.Embed(title='Ping Warning!', description=message, color=discord.Color.red())
+    mod_watch_warn_embed.set_footer(text='WARNING')
+    mod_watch_warn_embed.set_thumbnail(url=ctx.message.author.avatar_url)
+    await client.send_message(client.get_channel(warn_channel), embed=mod_watch_warn_embed)
+
+@bot.command(pass_context = True)
+async def ping(ctx):
+    """Pong!"""
+    msgTimeSent = ctx.message.timestamp
+    msgNow = datetime.now()
+    await bot.send_message(ctx.message.channel, "The message was sent at: " + str(msgNow - msgTimeSent))
+
 def log(message):
-    print(datetime.datetime.now(), message)
+    print(datetime.now(), message)
 
 client.run(authDeets.token)
