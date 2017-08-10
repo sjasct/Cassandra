@@ -3,10 +3,12 @@ from discord.ext import commands
 import random
 import asyncio
 import Dependencies
+from datetime import datetime
 
 class Admin():
     def __init__(self, bot):
         self.bot = bot   
+
         # strike command
     @commands.has_role("Mods")
     @commands.command(pass_context=True)
@@ -20,7 +22,7 @@ class Admin():
             member = ctx.message.mentions[0]
             strike_embed = discord.Embed(title="Strike", description= 'User: **{0}** \nReason: {1}'.format(member, reason), color=discord.Color.red())
             strike_embed.set_footer(text='Strike')
-            await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name="strikes"), '<&332973960318943233>', embed=strike_embed)
+            await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name="strikes"), '<@&332973960318943233>', embed=strike_embed)
             strike_embed = discord.Embed(title="Strike", description= 'You have been given a strike on the {0} server. \nReason: {1}'.format(ctx.message.server, reason), color=discord.Color.red())
             strike_embed.set_footer(text='Strike')
             await self.bot.send_message(member, embed=strike_embed)
