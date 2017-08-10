@@ -5,32 +5,36 @@ import authDeets
 import time
 from discord.ext import commands
 import random
-#import logging
-import youtube_dl
+# import logging
 import csv
 from threading import Timer
 from datetime import datetime
-#from checks import embed_perms, cmd_prefix_len
+
+# from checks import embed_perms, cmd_prefix_len
 
 description = '''Cassandra Help'''
 client = commands.Bot(command_prefix='-', description=description)
 bot = client
-version = 'Version: 1.2' 
+version = 'Version: 1.3'
+
 
 @client.event
 async def on_member_join(member):
     await bot.add_roles(member, discord.utils.get(member.server.roles, name="Elevens [Users]"))
 
     joinEmbed = discord.Embed(title='{}'.format(member) + " has joined the server.",
-                             description='Join Date: {} UTC'.format(member.joined_at), color=discord.Color.green())
+                              description='Join Date: {} UTC'.format(member.joined_at), color=discord.Color.green())
     joinEmbed.set_footer(text="User Joined")
     joinEmbed.set_thumbnail(url=member.avatar_url)
     await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=joinEmbed)
 
+
 @client.event
 async def on_member_remove(member):
     server = member.server
-    leaveEmbed = discord.Embed(title='{}'.format(member) +  " has left the server.", description= 'Leave Date: {} UTC'.format(datetime.datetime.now()), color=discord.Color.red())
+    leaveEmbed = discord.Embed(title='{}'.format(member) + " has left the server.",
+                               description='Leave Date: {} UTC'.format(datetime.datetime.now()),
+                               color=discord.Color.red())
     leaveEmbed.set_footer(text=datetime.datetime.now())
     leaveEmbed.set_thumbnail(url=member.avatar_url)
     await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=leaveEmbed)
@@ -39,7 +43,8 @@ async def on_member_remove(member):
 @client.event
 async def on_ready():
     print("Logged in as: {0}, with the ID of: {1}".format(client.user, client.user.id))
-    await client.change_presence(game=discord.Game(name='in a Digital Haunt', url="https://twitch.tv/ghostofsparkles", type=1))
+    await client.change_presence(
+        game=discord.Game(name='in a Digital Haunt', url="https://twitch.tv/ghostofsparkles", type=1))
     print("--")
 
     if not discord.opus.is_loaded():
@@ -50,10 +55,12 @@ async def on_ready():
         # note that on windows this DLL is automatically provided for you
         discord.opus.load_opus('opus')
 
+
 @client.event
 async def on_member_join(member):
     server = member.server
-    joinEmbed = discord.Embed(title="{} has joined the server.".format(member), description= 'Join Date: {} UTC'.format(member.joined_at), color=discord.Color.green())
+    joinEmbed = discord.Embed(title="{} has joined the server.".format(member),
+                              description='Join Date: {} UTC'.format(member.joined_at), color=discord.Color.green())
     joinEmbed.set_footer(text='User Joined')
     joinEmbed.set_thumbnail(url=member.avatar_url)
     await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=joinEmbed)
@@ -61,27 +68,34 @@ async def on_member_join(member):
     logMsg = "{0} ({0.id}) has just joined {1}. Added the 'Elevens [User]' Role to {0}.".format(member, server)
     log(logMsg)
 
+
 @client.event
 async def on_member_remove(member):
     server = member.server
-    leaveEmbed = discord.Embed(title="{} has left the server.".format(member), description= 'Leave Date: {} UTC'.format(datetime.utcnow()), color=discord.Color.red())
+    leaveEmbed = discord.Embed(title="{} has left the server.".format(member),
+                               description='Leave Date: {} UTC'.format(datetime.utcnow()), color=discord.Color.red())
     leaveEmbed.set_footer(text='User Left')
     leaveEmbed.set_thumbnail(url=member.avatar_url)
     await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=leaveEmbed)
     logMsg = "{0} ({0.id}) has just left {1}.".format(member, server)
     log(logMsg)
 
+
 @client.event
 async def on_message(message):
     # Ping warning
     # Change last 2 conditionals to single if have mod role but cba atm
-    if ("301392743840874497" in message.content) and message.author.id != client.user.id and message.author.id != "227187657715875841" and message.author.id != "108875988967882752":
-        log( 'Ping-Warn ID:' + message.author.id)
+    if (
+        "301392743840874497" in message.content) and message.author.id != client.user.id and message.author.id != "227187657715875841" and message.author.id != "108875988967882752":
         warningPing = "**Do not abuse the ping role!** {}".format(message.author.mention)
         await client.send_message(message.channel, warningPing)
         await client.delete_message(message)
         logMsg = "!! PING ABUSE !! {0} ({1})".format(message.author, message.author.id)
         log(logMsg)
+        await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="Elevens [Users]"))
+        await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="GO!! Fappers [Regulars]"))
+        await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="News Contributors"))
+        await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="Developers"))
 
     # System;Start #1
     if message.content.lower() == "cassandra can you hear me":
@@ -121,72 +135,92 @@ async def on_message(message):
 
     # Commands
     # Role Command
-@bot.command(pass_context = True)
-async def role(ctx, action : str, role : str):
+
+
+@bot.command(pass_context=True)
+async def role(ctx, action: str, role: str):
     """Adds roles that you are eligible for."""
     acceptableRoles = ["battlenet", "ping"]
     acceptableTypes = ["add", "remove", "+", "-"]
 
-    if(action in acceptableTypes and role in acceptableRoles):
+    if (action in acceptableTypes and role in acceptableRoles):
         if action == "add" or action == "+":
             try:
                 await bot.add_roles(ctx.message.author, discord.utils.get(ctx.message.server.roles, name=role))
             except:
-                await bot.send_message(ctx.message.channel, "Failed to add `{0}` role to {1}".format(role, ctx.message.author.name))
+                await bot.send_message(ctx.message.channel,
+                                       "Failed to add `{0}` role to {1}".format(role, ctx.message.author.name))
                 logMsg = "{1} failed to add the {0} role to themselves".format(role, ctx.message.author.name)
                 log(logMsg)
             finally:
-                await bot.send_message(ctx.message.channel, "Successfully added `{0}` role to {1}".format(role, ctx.message.author.name))
+                await bot.send_message(ctx.message.channel,
+                                       "Successfully added `{0}` role to {1}".format(role, ctx.message.author.name))
                 logMsg = "{1} added the {0} role to themselves".format(role, ctx.message.author.name)
                 log(logMsg)
         else:
             try:
                 await bot.remove_roles(ctx.message.author, discord.utils.get(ctx.message.server.roles, name=role))
             except:
-                await bot.send_message(ctx.message.channel, "Failed to remove `{0}` role from {1}".format(role, ctx.message.author.name))
+                await bot.send_message(ctx.message.channel,
+                                       "Failed to remove `{0}` role from {1}".format(role, ctx.message.author.name))
                 logMsg = "{1} failed to remove the {0} role from themselves".format(role, ctx.message.author.name)
                 log(logMsg)
             finally:
-                await bot.send_message(ctx.message.channel, "Successfully removed `{0}` role from {1}".format(role, ctx.message.author.name))
+                await bot.send_message(ctx.message.channel,
+                                       "Successfully removed `{0}` role from {1}".format(role, ctx.message.author.name))
                 logMsg = "{} removed the {} role from themselves".format(role, ctx.message.author.name)
                 log(logMsg)
     elif action not in acceptableTypes:
         await bot.send_message(ctx.message.channel, "Invalid parameter!")
     elif action in acceptableTypes and role not in acceptableRoles:
         await bot.send_message(ctx.message.channel, "Invalid role!")
-        
-    # Who am I Command
-@bot.command(pass_context = True)
+
+        # Who am I Command
+
+
+@bot.command(pass_context=True)
 async def whoami(ctx):
     """Tells you your identity"""
-    whoamiEmbed = discord.Embed(title="{}'s Information".format(ctx.message.author.name), description='Join Date: {0.joined_at} \n User ID: {0.id} \n Discriminator: {0.discriminator}'.format(ctx.message.author), color=discord.Color.gold())
+    whoamiEmbed = discord.Embed(title="{}'s Information".format(ctx.message.author.name),
+                                description='Join Date: {0.joined_at} \n User ID: {0.id} \n Discriminator: {0.discriminator}'.format(
+                                    ctx.message.author), color=discord.Color.gold())
     whoamiEmbed.set_footer(text=version)
     whoamiEmbed.set_thumbnail(url=ctx.message.author.avatar_url)
     await bot.send_message(ctx.message.channel, embed=whoamiEmbed)
 
     # About Command
-@bot.command(pass_context = True)
+
+
+@bot.command(pass_context=True)
 async def about(ctx):
     """Tells you about this bot."""
-    aboutEmbed = discord.Embed(title='About Cassandra', description="Custom Discord Bot", url="https://github.com/Avinch/CassBotPy", color=discord.Color.gold())
+    aboutEmbed = discord.Embed(title='About Cassandra', description="Custom Discord Bot",
+                               url="https://github.com/Avinch/CassBotPy", color=discord.Color.gold())
     aboutEmbed.set_footer(text=version)
     aboutEmbed.set_thumbnail(url=bot.user.avatar_url)
     await bot.send_message(ctx.message.channel, embed=aboutEmbed)
 
     # User Info Command
+
+
 @bot.command()
-async def userinfo(member : discord.Member):
+async def userinfo(member: discord.Member):
     """Says when a member joined."""
     await bot.say('{0.name} joined in {0.joined_at}'.format(member))
-    
+
     # Ping Command
-@bot.command(pass_context = True)
+
+
+@bot.command(pass_context=True)
 async def ping(ctx):
     """Pong!"""
     msgTimeSent = ctx.message.timestamp
     msgNow = datetime.now()
-    await bot.send_message(ctx.message.channel, "The message was sent at: " + str(msgNow - msgTimeSent))
-    
+    # await bot.send_message(ctx.message.channel, "The message was sent at: " + str(msgNow - msgTimeSent))
+    await bot.send_message(ctx.message.channel, "Pong!")
+    log(ctx.message.author.name + " pinged")
+
+
 class VoiceEntry:
     def __init__(self, message, player):
         self.requester = message.author
@@ -199,6 +233,7 @@ class VoiceEntry:
         if duration:
             fmt = fmt + ' [length: {0[0]}m {0[1]}s]'.format(divmod(duration, 60))
         return fmt.format(self.player, self.requester)
+
 
 class VoiceState:
     def __init__(self, bot):
@@ -231,10 +266,12 @@ class VoiceState:
             self.current.player.start()
             await self.play_next_song.wait()
 
+
 class Music:
     """Voice related commands.
     Works in multiple servers at once.
     """
+
     def __init__(self, bot):
         self.bot = bot
         self.voice_states = {}
@@ -262,7 +299,7 @@ class Music:
                 pass
 
     @commands.command(pass_context=True, no_pm=True)
-    async def join(self, ctx, *, channel : discord.Channel):
+    async def join(self, ctx, *, channel: discord.Channel):
         """Joins a voice channel."""
         try:
             await self.create_voice_client(channel)
@@ -277,7 +314,7 @@ class Music:
     async def summon(self, ctx):
         """Summons the bot to join your voice channel."""
         summoned_channel = ctx.message.author.voice_channel
-        if summoned_channel is None: 
+        if summoned_channel is None:
             await self.bot.say('You are not in a voice channel.')
             return False
 
@@ -290,7 +327,7 @@ class Music:
         return True
 
     @commands.command(pass_context=True, no_pm=True)
-    async def play(self, ctx, *, song : str):
+    async def play(self, ctx, *, song: str):
         """Plays a song."""
         state = self.get_voice_state(ctx.message.server)
         opts = {
@@ -315,7 +352,7 @@ class Music:
             await state.songs.put(entry)
 
     @commands.command(pass_context=True, no_pm=True)
-    async def volume(self, ctx, value : int):
+    async def volume(self, ctx, value: int):
         """Sets the volume of the currently playing song."""
 
         state = self.get_voice_state(ctx.message.server)
@@ -366,10 +403,14 @@ class Music:
         state = self.get_voice_state(ctx.message.server)
         if state.current is None:
             await self.bot.say('Not playing anything.')
+
+
 bot.add_cog(Music(bot))
 
-warn_channel = "modlog"
+warn_channel = "mod-log"
 mod_watch_list = []
+
+
 async def mod_watch_write(ctx, bot):
     mod_watch_list.append(ctx.message.author.id)
     if mod_watch_list.count(ctx.message.author.id) == 1:
@@ -386,19 +427,64 @@ async def mod_watch_write(ctx, bot):
         log(logMsg)
         await ping_warn(ctx, logMsg)
 
+
 async def ping_warn(ctx, message):
     mod_watch_warn_embed = discord.Embed(title='Ping Warning!', description=message, color=discord.Color.red())
     mod_watch_warn_embed.set_footer(text='WARNING')
     mod_watch_warn_embed.set_thumbnail(url=ctx.message.author.avatar_url)
     await client.send_message(client.get_channel(warn_channel), embed=mod_watch_warn_embed)
+
+
 '''
 @bot.command(pass_context = True)
 async def ping(ctx):
-    msgTimeSent = ctx.message.timestamp
-    msgNow = datetime.datetime.now()
-    await bot.send_message(ctx.message.channel, "The message was sent at: " + str(msgNow - msgTimeSent))
+   msgTimeSent = ctx.message.timestamp
+   msgNow = datetime.datetime.now()
+   await bot.send_message(ctx.message.channel, "The message was sent at: " + str(msgNow - msgTimeSent))
 '''
+
+
+@bot.command(pass_context=True)
+async def id(ctx, type: str, request: str):
+    message = "The id of the " + type + " `" + request + "` is "
+    accept_type = ["channel", "user", "member", "server", "role"]
+
+    log(ctx.message.author.name + " requested the ID of the " + type + " " + request)
+
+    if (type in accept_type):
+
+        object = get(ctx, type, request)
+
+        if object == None:
+            await client.send_message(ctx.message.channel,
+                                      "**Error!** A " + type + " named " + request + " could not be found! You must enter the exact name (including caps)")
+        else:
+            await client.send_message(ctx.message.channel, message + get(ctx, type, request).id)
+
+    else:
+
+        await client.send_message(ctx.message.channel, type + " does not have an ID!")
+
+
 def log(message):
-    print(datetime.now(), message)
+    print(datetime.now(), "||", message)
+
+
+def get(ctx, type, name):
+    if (type == "channel"):
+        get = ctx.message.server.channels
+    elif (type == "user" or type == "member"):
+        get = ctx.message.server.members
+    elif (type == "role"):
+        get = ctx.message.server.roles
+
+    try:
+        fin = discord.utils.get(get, name=name)
+    except:
+        print("failed")
+    finally:
+        return fin
+
 
 client.run(authDeets.token)
+
