@@ -106,47 +106,5 @@ async def on_message(message):
             log(logMsg)
     await bot.process_commands(message)
 
-
-@bot.command(pass_context=True)
-async def id(ctx, type: str, request: str):
-    message = "The id of the " + type + " `" + request + "` is "
-    accept_type = ["channel", "user", "member", "server", "role"]
-
-    log(ctx.message.author.name + " requested the ID of the " + type + " " + request)
-
-    if (type in accept_type):
-
-        object = get(ctx, type, request)
-
-        if object == None:
-            await client.send_message(ctx.message.channel,
-                                      "**Error!** A " + type + " named " + request + " could not be found! You must enter the exact name (including caps)")
-        else:
-            await client.send_message(ctx.message.channel, message + get(ctx, type, request).id)
-
-    else:
-
-        await client.send_message(ctx.message.channel, type + " does not have an ID!")
-
-
-def log(message):
-    print(datetime.now(), "||", message)
-
-
-def get(ctx, type, name):
-    if (type == "channel"):
-        get = ctx.message.server.channels
-    elif (type == "user" or type == "member"):
-        get = ctx.message.server.members
-    elif (type == "role"):
-        get = ctx.message.server.roles
-
-    try:
-        fin = discord.utils.get(get, name=name)
-    except:
-        print("failed")
-    finally:
-        return fin
-
 client.run(authDeets.token)
 
