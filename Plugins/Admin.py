@@ -23,7 +23,7 @@ class Admin():
             strike_embed = discord.Embed(title="Strike", description= 'User: **{0}** \nReason: {1}'.format(member, reason), color=discord.Color.red())
             strike_embed.set_footer(text='Strike')
             await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name="strikes"), '<@&332973960318943233>', embed=strike_embed)
-            strike_embed = discord.Embed(title="Strike", description= 'You have been given a strike on the {0} server. \nReason: {1}'.format(ctx.message.server, reason), color=discord.Color.red())
+            strike_embed = discord.Embed(title="Strike", description= 'You have been given a strike in {0}. \nReason: {1}'.format(ctx.message.server, reason), color=discord.Color.red())
             strike_embed.set_footer(text='Strike')
             await self.bot.send_message(member, embed=strike_embed)
             logMsg = "{0} has been striked on the {1} server. Reason: {2}".format(member, ctx.message.server, reason)
