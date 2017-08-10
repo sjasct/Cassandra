@@ -113,8 +113,39 @@ class Bot():
         aboutEmbed.set_thumbnail(url=self.bot.user.avatar_url)
         await self.bot.send_message(ctx.message.channel, embed=aboutEmbed)
 
+    @commands.command(pass_context=True)
+    async def id(self, ctx, type: str=None, request: str=None):
+        message = "The id of the {0} `{1}` is ".format(type, request)
+        accept_type = ["channel", "user", "member", "server", "role"]
+        if (type in accept_type and request is not None):
+            object = get(ctx, type, request)
+            if object == None:
+                await self.bot.send_message(ctx.message.channel,
+                                        "**Error!** A {0} named {1} could not be found! You must enter the exact name (including caps)".format(request, type))
+            else:
+                await self.bot.send_message(ctx.message.channel, message + get(ctx, type, request).id)
+                log(ctx.message.author.name + " requested the ID of the {0} {1}".format(type, request))
+        else:
+            await self.bot.send_message(ctx.message.channel, type + " does not have an ID!")
+
+def get(ctx, type, name):
+    if (type == "channel"):
+        get = ctx.message.server.channels
+    elif (type == "user" or type == "member"):
+        get = ctx.message.server.members
+    elif (type == "role"):
+        get = ctx.message.server.roles
+    elif (type == "server"):
+        get = ctx.message.server
+    try:
+        fin = discord.utils.get(get, name=name)
+    except:
+        print("failed")
+    finally:
+        return fin
+
 def log(message):
     print(datetime.now(), message)
-    
+
 def setup(bot):
     bot.add_cog(Bot(bot))
