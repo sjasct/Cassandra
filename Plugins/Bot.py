@@ -72,7 +72,7 @@ class Bot():
             await self.bot.say('Feedback Taken.')
             suggestion_embed = discord.Embed(title="Suggestion", description= 'Suggestion: *{0} by {1}*'.format(suggestion, ctx.message.author), color=discord.Color.purple())
             suggestion_embed.set_footer(text='Suggestion for TomBot')
-            await self.bot.send_message(discord.utils.get(ctx.message.server.channels, id=dependencies.suggestions_channel), embed=suggestion_embed)
+            await self.bot.send_message(discord.utils.get(ctx.message.server.channels, id=Dependencies.suggestions_channel), embed=suggestion_embed)
 
         # rule command
     """@commands.command(pass_context = True)
