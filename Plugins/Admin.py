@@ -8,7 +8,7 @@ class Admin():
     def __init__(self, bot):
         self.bot = bot   
         # strike command
-    @commands.has_any_role("Moderators™", "TomCord Mod")
+    @commands.has_role("Mods")
     @commands.command(pass_context=True)
     async def strike(self, ctx, member : str=None, *, reason : str=None):
         '''Gives a strike to a specified person.'''
