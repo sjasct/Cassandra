@@ -1,2 +1,2 @@
-version = 'Version: 1.4'
-suggestions_channel = '345211914218897409'
+version = 'Version: 1.5'
+logChannel = 'mod-log'

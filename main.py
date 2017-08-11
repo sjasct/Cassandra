@@ -9,6 +9,10 @@ from datetime import datetime
 import Plugins
 import Dependencies
 from datetime import datetime
+from Plugins import Bot as botPlg
+
+def log(message):
+    botPlg.log(message)
 
 startup_extensions = ["Plugins.Admin", "Plugins.Bot", "Plugins.Dev"]
 description = '''Cassandra Help'''
@@ -17,10 +21,13 @@ bot = client
 
 @client.event
 async def on_ready():
-    print("Logged in as: {0}, with the ID of: {1}".format(client.user, client.user.id))
+    print("================")
+    log("Connect Successful")
+    logMsg = "Logged in as: {0}, with the ID of: {1}".format(client.user, client.user.id)
+    log(logMsg)
+    print("================")
     await client.change_presence(
         game=discord.Game(name='in a Digital Haunt', url="https://twitch.tv/ghostofsparkles", type=1))
-    print("--")
     if __name__ == "__main__":
         for extension in startup_extensions:
             try:
@@ -59,7 +66,7 @@ async def on_member_remove(member):
 async def on_message(message):
     # Ping warning
     # Change last 2 conditionals to single if have mod role but cba atm
-    if ("301392743840874497" in message.content) and message.author.id != client.user.id and message.author.id != "227187657715875841" and message.author.id != "108875988967882752":
+    if ("300016787960102923" in message.content) and message.author.id != client.user.id and message.author.id != "-227187657715875841" and message.author.id != "-108875988967882752":
         warningPing = "**Do not abuse the ping role!** {}".format(message.author.mention)
         await client.send_message(message.channel, warningPing)
         await client.delete_message(message)
@@ -69,6 +76,7 @@ async def on_message(message):
         await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="GO!! Fappers [Regulars]"))
         await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="News Contributors"))
         await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="Developers"))
+        await bot.send_message(discord.utils.get(ctx.message.server.channels, name=Dependencies.logChannel), message.author + " has abused ping. All special roles have been removed.")
 
     # System;Start #1
     if message.content.lower() == "cassandra can you hear me":
@@ -106,5 +114,7 @@ async def on_message(message):
             log(logMsg)
     await bot.process_commands(message)
 
+
+log("Attempting to connect to Discord...")
 client.run(authDeets.token)
 

@@ -4,6 +4,10 @@ import random
 import asyncio
 import Dependencies
 from datetime import datetime
+from Plugins import Bot as botPlg
+
+def log(message):
+    botPlg.log(message)
 
 class Admin():
     def __init__(self, bot):
@@ -22,7 +26,7 @@ class Admin():
             member = ctx.message.mentions[0]
             strike_embed = discord.Embed(title="Strike", description= 'User: **{0}** \nReason: {1}'.format(member, reason), color=discord.Color.red())
             strike_embed.set_footer(text='Strike')
-            await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name="strikes"), '<@&332973960318943233>', embed=strike_embed)
+            await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name=Dependencies.logChannel), '<@&332973960318943233>', embed=strike_embed)
             strike_embed = discord.Embed(title="Strike", description= 'You have been given a strike in {0}. \nReason: {1}'.format(ctx.message.server, reason), color=discord.Color.red())
             strike_embed.set_footer(text='Strike')
             await self.bot.send_message(member, embed=strike_embed)
@@ -56,9 +60,9 @@ class Admin():
             await self.bot.ban(member)
             await self.bot.say('Kicked {0}. Reason: {1}'.format(member, reason))
             log('{0} has been kicked from {1}. Reason: {2}'.format(member, ctx.message.server, reason))
-
+'''
 def log(message):
     print(datetime.now(), message)
-
+'''
 def setup(bot):
     bot.add_cog(Admin(bot))

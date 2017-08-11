@@ -53,7 +53,7 @@ class Bot():
         whoamiEmbed.set_thumbnail(url=ctx.message.author.avatar_url)
         await self.bot.send_message(ctx.message.channel, embed=whoamiEmbed)
         
-    @commands.command()
+    @commands.command(pass_context = True)
     async def userinfo(self, member : str=None):
         """[W.I.P] Says when a member joined."""
         member = ctx.message.mentions[0]
@@ -103,6 +103,8 @@ class Bot():
         msgTimeSent = ctx.message.timestamp
         msgNow = datetime.now()
         await self.bot.send_message(ctx.message.channel, "Pong! This message was sent at: " + str(msgNow - msgTimeSent))
+        logMsg = ctx.message.author.name + " just sent the bot a ball! (-ping)"
+        log(logMsg)
 
         # About Command
     @commands.command(pass_context = True)
@@ -117,14 +119,19 @@ class Bot():
     async def id(self, ctx, type: str=None, request: str=None):
         message = "The id of the {0} `{1}` is ".format(type, request)
         accept_type = ["channel", "user", "member", "server", "role"]
-        if (type in accept_type and request is not None):
-            object = get(ctx, type, request)
-            if object == None:
-                await self.bot.send_message(ctx.message.channel,
-                                        "**Error!** A {0} named {1} could not be found! You must enter the exact name (including caps)".format(request, type))
-            else:
-                await self.bot.send_message(ctx.message.channel, message + get(ctx, type, request).id)
-                log(ctx.message.author.name + " requested the ID of the {0} {1}".format(type, request))
+        if (type in accept_type):
+            if type == "server":
+                message = "The id of the {0} is ".format(type)
+                await self.bot.send_message(ctx.message.channel, message + ctx.message.server.id)
+                log(ctx.message.author.name + " requested the ID of the {0}".format(type))
+            elif request is not None:
+                object = get(ctx, type, request)
+                if object == None:
+                    await self.bot.send_message(ctx.message.channel, "**Error!** A {0} named {1} could not be found! You must enter the exact name (including caps)".format(request, type))
+                else:
+                    message = "The id of the {0} `{1}` is ".format(type, request)
+                    await self.bot.send_message(ctx.message.channel, message + get(ctx, type, request).id)
+                    log(ctx.message.author.name + " requested the ID of the {0} {1}".format(type, request))
         else:
             await self.bot.send_message(ctx.message.channel, type + " does not have an ID!")
 
@@ -145,7 +152,7 @@ def get(ctx, type, name):
         return fin
 
 def log(message):
-    print(datetime.now(), message)
+    print(datetime.now(), "｜｜", message)
 
 def setup(bot):
     bot.add_cog(Bot(bot))
