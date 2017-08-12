@@ -54,7 +54,7 @@ class Bot():
         await self.bot.send_message(ctx.message.channel, embed=whoamiEmbed)
         
     @commands.command(pass_context = True)
-    async def userinfo(self, member : str=None):
+    async def userinfo(self, ctx, member : str=None):
         """[W.I.P] Says when a member joined."""
         member = ctx.message.mentions[0]
         if member is None:
@@ -71,8 +71,8 @@ class Bot():
         else:
             await self.bot.say('Feedback Taken.')
             suggestion_embed = discord.Embed(title="Suggestion", description= 'Suggestion: *{0} by {1}*'.format(suggestion, ctx.message.author), color=discord.Color.purple())
-            suggestion_embed.set_footer(text='Suggestion for TomBot')
-            await self.bot.send_message(discord.utils.get(ctx.message.server.channels, id=Dependencies.suggestions_channel), embed=suggestion_embed)
+            suggestion_embed.set_footer(text='Suggestion for Cassandra')
+            await self.bot.send_message(discord.utils.get(ctx.message.server.channels, id=Dependencies.logChannel), embed=suggestion_embed)
 
         # rule command
     """@commands.command(pass_context = True)

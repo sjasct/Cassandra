@@ -64,19 +64,38 @@ async def on_member_remove(member):
 
 @client.event
 async def on_message(message):
-    # Ping warning
-    # Change last 2 conditionals to single if have mod role but cba atm
-    if ("301392743840874497" in message.content) and message.author.id != client.user.id and message.author.id != "227187657715875841" and message.author.id != "108875988967882752":
+    
+    # Ping mention abuse
+    if ((discord.utils.get(message.server.roles, name="ping").id) in message.content) and message.author.id != client.user.id and discord.utils.get(message.server.roles, name="Mods") not in message.author.roles:
+
         warningPing = "**Do not abuse the ping role!** {}".format(message.author.mention)
         await client.send_message(message.channel, warningPing)
         await client.delete_message(message)
+
         logMsg = "!! PING ABUSE !! {0} ({1})".format(message.author, message.author.id)
         log(logMsg)
+
         await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="Elevens [Users]"))
         await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="GO!! Fappers [Regulars]"))
         await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="News Contributors"))
         await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="Developers"))
-        await bot.send_message(discord.utils.get(ctx.message.server.channels, name=Dependencies.logChannel), message.author + " has abused ping. All special roles have been removed.")
+
+        alert_embed = discord.Embed(title="Ping Role Mention", description= 'User: **{0}** \nChannel: {1}'.format(message.author.name, message.channel.name), color=discord.Color.red())
+        alert_embed.set_footer(text='Abuse Notification')
+        await bot.send_message(discord.utils.get(message.server.channels, name=Dependencies.logChannel),embed=alert_embed)
+
+    if ("discord.gg/" in message.clean_content or "discordapp.com/invite" in message.clean_content and message.author.id != client.user.id and discord.utils.get(message.server.roles, name="Mods") not in message.author.roles):
+
+        warningPing = "**Do not send invites!** {}".format(message.author.mention)
+        await client.send_message(message.channel, warningPing)
+        await client.delete_message(message)
+
+        logMsg = "{0} ({1}) sent an invite in {2}".format(message.author, message.author.id, message.server.name)
+        log(logMsg)
+
+        alert_embed = discord.Embed(title="Invite Sent", description= 'User: **{0}** \nChannel: {1}'.format(message.author.name, message.channel.name), color=discord.Color.red())
+        alert_embed.set_footer(text='Abuse Notification')
+        await bot.send_message(discord.utils.get(message.server.channels, name=Dependencies.logChannel),embed=alert_embed)
 
     # System;Start #1
     if message.content.lower() == "cassandra can you hear me":
@@ -94,6 +113,7 @@ async def on_message(message):
             await voice.disconnect()
             logMsg = "{} asked Cassandra if she could hear them (voice)".format(message.author)
             log(logMsg)
+
     # System;Start #2
     if message.content.lower() == "cassandra are you ready to begin" or message.content.lower() == "are you ready to begin":
         if message.author.voice.voice_channel == None:
