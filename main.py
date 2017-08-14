@@ -39,15 +39,19 @@ async def on_ready():
 
 @client.event
 async def on_member_join(member):
-    server = member.server
-    joinEmbed = discord.Embed(title="{} has joined the server.".format(member),
-                              description='Join Date: {} UTC'.format(member.joined_at), color=discord.Color.green())
-    joinEmbed.set_footer(text='User Joined')
-    joinEmbed.set_thumbnail(url=member.avatar_url)
-    await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=joinEmbed)
-    await bot.add_roles(member, discord.utils.get(member.server.roles, name="Elevens [Users]"))
-    logMsg = "{0} ({0.id}) has just joined {1}. Added the 'Elevens [User]' Role to {0}.".format(member, server)
-    log(logMsg)
+
+    if member.id == "166312640329547776":
+        await bot.ban(member)
+    else:
+        server = member.server
+        joinEmbed = discord.Embed(title="{} has joined the server.".format(member),
+                                description='Join Date: {} UTC'.format(member.joined_at), color=discord.Color.green())
+        joinEmbed.set_footer(text='User Joined')
+        joinEmbed.set_thumbnail(url=member.avatar_url)
+        await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=joinEmbed)
+        await bot.add_roles(member, discord.utils.get(member.server.roles, name="Elevens [Users]"))
+        logMsg = "{0} ({0.id}) has just joined {1}. Added the 'Elevens [User]' Role to {0}.".format(member, server)
+        log(logMsg)
 
 
 @client.event
@@ -66,6 +70,12 @@ async def on_member_remove(member):
 async def on_message(message):
     
     # Ping mention abuse
+    print("==GET==")
+    print(discord.utils.get(message.server.roles, name="Mods").name)
+    print("==ROLES")
+    for role in message.author.roles:
+        print(role.name)
+    print("/-==rroles==")
     if ((discord.utils.get(message.server.roles, name="ping").id) in message.content) and message.author.id != client.user.id and discord.utils.get(message.server.roles, name="Mods") not in message.author.roles:
 
         warningPing = "**Do not abuse the ping role!** {}".format(message.author.mention)
