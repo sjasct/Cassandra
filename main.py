@@ -19,9 +19,6 @@ description = '''Cassandra Help'''
 client = commands.Bot(command_prefix='-', description=description)
 bot = client
 
-def log(message):
-    botPlg.log(message)
-
 @client.event
 async def on_ready():
     print("================")
@@ -81,7 +78,7 @@ async def on_message(message):
         alert_embed.set_footer(text='Abuse Notification')
         await bot.send_message(discord.utils.get(message.server.channels, name=Dependencies.logChannel),embed=alert_embed)
 
-    if ("discord.gg/" in message.clean_content or "discordapp.com/invite" in message.clean_content and message.author.id != client.user.id and discord.utils.get(message.server.roles, name="Mods") not in message.author.roles):
+    if (("discord.gg/" in message.clean_content or "discordapp.com/invite" in message.clean_content) and message.author.id != client.user.id and discord.utils.get(message.server.roles, name="Mods") not in message.author.roles):
 
         warningPing = "**Do not send invites!** {}".format(message.author.mention)
         await client.send_message(message.channel, warningPing)
