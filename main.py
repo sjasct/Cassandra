@@ -19,6 +19,9 @@ description = '''Cassandra Help'''
 client = commands.Bot(command_prefix='-', description=description)
 bot = client
 
+def log(message):
+    botPlg.log(message)
+
 @client.event
 async def on_ready():
     print("================")
@@ -36,59 +39,43 @@ async def on_ready():
                 exc = '{}: {}'.format(type(e).__name__, e)
                 print('Failed to load extension {}\n{}'.format(extension, exc))
 
-
 @client.event
 async def on_member_join(member):
-
-    if member.id == "166312640329547776":
-        await bot.ban(member)
-    else:
-        server = member.server
-        joinEmbed = discord.Embed(title="{} has joined the server.".format(member),
-                                description='Join Date: {} UTC'.format(member.joined_at), color=discord.Color.green())
-        joinEmbed.set_footer(text='User Joined')
-        joinEmbed.set_thumbnail(url=member.avatar_url)
-        await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=joinEmbed)
-        await bot.add_roles(member, discord.utils.get(member.server.roles, name="Elevens [Users]"))
-        logMsg = "{0} ({0.id}) has just joined {1}. Added the 'Elevens [User]' Role to {0}.".format(member, server)
-        log(logMsg)
-
+    server = member.server
+    joinEmbed = discord.Embed(title="{} has joined the server.".format(member), description= 'Join Date: {} UTC'.format(member.joined_at), color=discord.Color.green())
+    joinEmbed.set_footer(text='User Joined')
+    joinEmbed.set_thumbnail(url=member.avatar_url)
+    await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=joinEmbed)
+    await bot.add_roles(member, discord.utils.get(member.server.roles, name="Elevens [Users]"))
+    logMsg = "{0} ({0.id}) has just joined {1}. Added the 'Elevens [User]' Role to {0}.".format(member, server)
+    log(logMsg)
 
 @client.event
 async def on_member_remove(member):
     server = member.server
-    leaveEmbed = discord.Embed(title="{} has left the server.".format(member),
-                               description='Leave Date: {} UTC'.format(datetime.utcnow()), color=discord.Color.red())
+    leaveEmbed = discord.Embed(title="{} has left the server.".format(member), description= 'Leave Date: {} UTC'.format(datetime.utcnow()), color=discord.Color.red())
     leaveEmbed.set_footer(text='User Left')
     leaveEmbed.set_thumbnail(url=member.avatar_url)
     await bot.send_message(discord.utils.get(member.server.channels, name='joinleave'), embed=leaveEmbed)
     logMsg = "{0} ({0.id}) has just left {1}.".format(member, server)
     log(logMsg)
 
-
 @client.event
 async def on_message(message):
     
     # Ping mention abuse
-    print("==GET==")
-    print(discord.utils.get(message.server.roles, name="Mods").name)
-    print("==ROLES")
-    for role in message.author.roles:
-        print(role.name)
-    print("/-==rroles==")
     if ((discord.utils.get(message.server.roles, name="ping").id) in message.content) and message.author.id != client.user.id and discord.utils.get(message.server.roles, name="Mods") not in message.author.roles:
-
         warningPing = "**Do not abuse the ping role!** {}".format(message.author.mention)
         await client.send_message(message.channel, warningPing)
         await client.delete_message(message)
 
         logMsg = "!! PING ABUSE !! {0} ({1})".format(message.author, message.author.id)
         log(logMsg)
+        await bot.replace_roles(message.author)
 
-        await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="Elevens [Users]"))
-        await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="GO!! Fappers [Regulars]"))
-        await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="News Contributors"))
-        await bot.remove_roles(message.author, discord.utils.get(message.server.roles, name="Developers"))
+        alert_embed = discord.Embed(title="Ping Role Mention", description= 'User: **{0}** \nChannel: {1}'.format(message.author.name, message.channel.name), color=discord.Color.red())
+        alert_embed.set_footer(text='Abuse Notification')
+        await bot.send_message(discord.utils.get(message.server.channels, name=Dependencies.logChannel),embed=alert_embed)
 
         alert_embed = discord.Embed(title="Ping Role Mention", description= 'User: **{0}** \nChannel: {1}'.format(message.author.name, message.channel.name), color=discord.Color.red())
         alert_embed.set_footer(text='Abuse Notification')
@@ -119,7 +106,7 @@ async def on_message(message):
             voice = await client.join_voice_channel(vc)
             player = voice.create_ffmpeg_player('ss1.mp3')
             player.start()
-            time.sleep(4)
+            await asyncio.sleep(4)
             await voice.disconnect()
             logMsg = "{} asked Cassandra if she could hear them (voice)".format(message.author)
             log(logMsg)
@@ -138,13 +125,22 @@ async def on_message(message):
             voice = await client.join_voice_channel(vc)
             player = voice.create_ffmpeg_player('ss2.mp3')
             player.start()
-            time.sleep(5)
+            await asyncio.sleep(5)
             await voice.disconnect()
             logMsg = "{} asked Cassandra if she was ready to begin (voice)".format(message.author)
             log(logMsg)
-    await bot.process_commands(message)
 
+    # r/Area11Banned Discord 1st Anniversary Update Special
+    if message.author.id == "301449773200834561":
+        member = message.author.mention
+        await bot.send_message(message.channel, 'Thank you for your time at {0}. Understandable, have a nice day, {1}.'.format(message.server.name, message.author.mention))
+        await asyncio.sleep(10)
+        await bot.replace_roles(message.author)
+        await bot.send_message(message.author, 'You are being banned from {0} in 50 seconds. Hope you have a good evening.'.format(message.server.name))
+        await asyncio.sleep(50)
+        await bot.ban(message.author)
+        await bot.send_message(message.channel, '{} has been banned.'.format(member))
+    await bot.process_commands(message)
 
 log("Attempting to connect to Discord...")
 client.run(authDeets.token)
-
