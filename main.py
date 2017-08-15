@@ -11,6 +11,9 @@ import Dependencies
 from datetime import datetime
 from Plugins import Bot as botPlg
 
+def log(message):
+    botPlg.log(message)
+
 startup_extensions = ["Plugins.Admin", "Plugins.Bot", "Plugins.Dev"]
 description = '''Cassandra Help'''
 client = commands.Bot(command_prefix='-', description=description)
@@ -62,7 +65,6 @@ async def on_message(message):
     
     # Ping mention abuse
     if ((discord.utils.get(message.server.roles, name="ping").id) in message.content) and message.author.id != client.user.id and discord.utils.get(message.server.roles, name="Mods") not in message.author.roles:
-        
         warningPing = "**Do not abuse the ping role!** {}".format(message.author.mention)
         await client.send_message(message.channel, warningPing)
         await client.delete_message(message)
@@ -72,6 +74,23 @@ async def on_message(message):
         await bot.replace_roles(message.author)
 
         alert_embed = discord.Embed(title="Ping Role Mention", description= 'User: **{0}** \nChannel: {1}'.format(message.author.name, message.channel.name), color=discord.Color.red())
+        alert_embed.set_footer(text='Abuse Notification')
+        await bot.send_message(discord.utils.get(message.server.channels, name=Dependencies.logChannel),embed=alert_embed)
+
+        alert_embed = discord.Embed(title="Ping Role Mention", description= 'User: **{0}** \nChannel: {1}'.format(message.author.name, message.channel.name), color=discord.Color.red())
+        alert_embed.set_footer(text='Abuse Notification')
+        await bot.send_message(discord.utils.get(message.server.channels, name=Dependencies.logChannel),embed=alert_embed)
+
+    if ("discord.gg/" in message.clean_content or "discordapp.com/invite" in message.clean_content and message.author.id != client.user.id and discord.utils.get(message.server.roles, name="Mods") not in message.author.roles):
+
+        warningPing = "**Do not send invites!** {}".format(message.author.mention)
+        await client.send_message(message.channel, warningPing)
+        await client.delete_message(message)
+
+        logMsg = "{0} ({1}) sent an invite in {2}".format(message.author, message.author.id, message.server.name)
+        log(logMsg)
+
+        alert_embed = discord.Embed(title="Invite Sent", description= 'User: **{0}** \nChannel: {1}'.format(message.author.name, message.channel.name), color=discord.Color.red())
         alert_embed.set_footer(text='Abuse Notification')
         await bot.send_message(discord.utils.get(message.server.channels, name=Dependencies.logChannel),embed=alert_embed)
 
@@ -91,6 +110,7 @@ async def on_message(message):
             await voice.disconnect()
             logMsg = "{} asked Cassandra if she could hear them (voice)".format(message.author)
             log(logMsg)
+
     # System;Start #2
     if message.content.lower() == "cassandra are you ready to begin" or message.content.lower() == "are you ready to begin":
         if message.author.voice.voice_channel == None:
