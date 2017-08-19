@@ -131,7 +131,7 @@ async def on_message(message):
             log(logMsg)
 
     # r/Area11Banned Discord 1st Anniversary Update Special
-    if message.author.id == "166312640329547776 ":
+    if message.author.id == "166312640329547776":
         member = message.author.mention
         await bot.send_message(message.channel, 'Thank you for your time at {0}. Understandable, have a nice day, {1}.'.format(message.server.name, message.author.mention))
         await asyncio.sleep(10)
