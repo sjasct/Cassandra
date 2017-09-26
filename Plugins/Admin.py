@@ -13,7 +13,7 @@ class Admin():
     def __init__(self, bot):
         self.bot = bot   
 
-        # strike command
+    # strike command
     @commands.has_role("Mods")
     @commands.command(pass_context=True)
     async def strike(self, ctx, member : str=None, *, reason : str=None):
@@ -32,6 +32,8 @@ class Admin():
             await self.bot.send_message(member, embed=strike_embed)
             logMsg = "{0} has been striked on the {1} server. Reason: {2}".format(member, ctx.message.server, reason)
             log(logMsg)
+
+    
 
     @commands.has_permissions(kick_members=True)
     @commands.command(pass_context=True)
@@ -60,9 +62,14 @@ class Admin():
             await self.bot.ban(member)
             await self.bot.say('Kicked {0}. Reason: {1}'.format(member, reason))
             log('{0} has been kicked from {1}. Reason: {2}'.format(member, ctx.message.server, reason))
+
+
+        
 '''
 def log(message):
     print(datetime.now(), message)
 '''
 def setup(bot):
     bot.add_cog(Admin(bot))
+
+    

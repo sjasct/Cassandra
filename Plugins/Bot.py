@@ -74,6 +74,13 @@ class Bot():
             suggestion_embed.set_footer(text='Suggestion for Cassandra')
             await self.bot.send_message(discord.utils.get(ctx.message.server.channels, id=Dependencies.logChannel), embed=suggestion_embed)
 
+    @commands.has_role("Mods")
+    @commands.command(pass_context=True)
+    async def disclaimer(self, ctx):
+        message = "The Area 11 Discord:tm: is a space where all users should be happy and comfortable. Breaking the rules is a violation of that comfort, and though it seems hostile to do so, the moderator team must enorce the rules."
+
+        await self.bot.send_message(ctx.message.channel, message)
+
         # rule command
     """@commands.command(pass_context = True)
     async def rule(self, ctx, rule : str):
