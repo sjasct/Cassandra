@@ -1,7 +1,7 @@
 import discord
 import asyncio
 import websockets
-#import authDeets
+import authDeets
 import time
 from discord.ext import commands
 import random
@@ -194,4 +194,4 @@ async def on_message(message):
         await message.channel.send('{} has been banned.'.format(member))
     await bot.process_commands(message)
 log('Attempting to connect to Discord...')
-client.run('MzM1NDc1NDI3Mjk0MzE0NDk4.DLLhlQ.k7e1D7HzhmXlAM0lHrn3h8EVW1w')
+client.run(authDeets.token)
