@@ -52,6 +52,30 @@ class Bot():
         whoamiEmbed.set_footer(text='Who Am I Command')
         whoamiEmbed.set_thumbnail(url=ctx.message.author.avatar_url)
         await self.bot.send_message(ctx.message.channel, embed=whoamiEmbed)
+
+    @commands.command(pass_context = True)
+    async def parvJar(self, ctx):
+        """The Parv Jar"""
+
+        name = discord.utils.get(ctx.message.server.members, id="254840014876180492 ").name
+    
+        parvfile = open("parvjar.txt", "r")
+
+        noOfParv = parvfile.read()
+
+        parvfile.close()
+
+        message = "{0} has mentioned Parv a total of {1} times!".format(name, noOfParv)
+    
+        await self.bot.send_message(ctx.message.channel, message)
+
+    @commands.command(pass_context = True)
+    async def trello(self, ctx):
+        """The Parv Jar"""
+
+        message = "**Cassandra Trello board for bot progress:**\nhttps://trello.com/b/RPRZyqWx/cassandra-discord-bot"
+    
+        await self.bot.send_message(ctx.message.channel, message)
         
     @commands.command(pass_context = True)
     async def userinfo(self, ctx, member : str=None):

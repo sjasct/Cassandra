@@ -88,6 +88,8 @@ async def on_member_remove(member):
     log(logMsg)
 
 
+
+
 @client.event
 async def on_message_edit(before, after):
 
@@ -121,6 +123,23 @@ async def on_message_edit(before, after):
 async def on_message(message):
 
     backupServer = discord.utils.get(client.servers, id=backupServerId)
+
+    if("parv" in message.content.lower() and message.author.id == "254840014876180492" and message.content.lower() != "-parvjar"):
+
+        parvfile = open("parvjar.txt", "r")
+
+        noOfParv = int(parvfile.read())
+
+        parvfile.close()
+
+        noOfParv += 1
+
+        parvfile = open("parvjar.txt", "w")
+        
+        parvfile.write(str(noOfParv))
+
+        parvfile.close()
+
 
     if message.author.id != client.user.id and message.server.id == "212982046992105473":
 
