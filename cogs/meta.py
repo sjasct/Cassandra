@@ -38,7 +38,6 @@ class Meta:
         except Exception as e:
             await ctx.send(e)
 
-
     @commands.command(aliases=["user_info"])
     async def userinfo(self, ctx, member: discord.Member = None):
         """Shows a profile. Defaults to you."""
