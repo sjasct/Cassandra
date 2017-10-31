@@ -76,6 +76,7 @@ class Mod:
 
     @command(name="rule")
     async def rule_(self, ctx, rule: int):
+        """Shows a rule. Only integers are accepted."""
         if rule >= 12:
             await ctx.send(f"There isn't a rule `{rule}`! There are only 11 rules.")
         else:
