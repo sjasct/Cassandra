@@ -7,7 +7,8 @@ from discord.ext.commands.converter import *
 
 
 class CassandraContext(commands.Context):
-    def is_float(self, string):
+    def is_float(self, argument):
+        """Checks if the argument is a float."""
         try:
             return float(string)  # True if string is a number contains a dot
         except ValueError:  # String is not a number
@@ -24,14 +25,14 @@ class CassandraContext(commands.Context):
 
     @property
     def session(self):
+        """Returns the aiohttp.ClientSession() instance in CassandraBase."""
         return self.bot.session
 
 
 class CassandraBase(commands.Bot):
     """This is the class that initializes the bot."""
     def __init__(self):
-        self.token = "MzM1NDc1NDI3Mjk0MzE0NDk4.DL1hMg.PDMOjXqnw3korydmHRFkfb8Im9w"
-        # os.environ['TOKEN'] / in production
+        self.token = os.environ['TOKEN']
         self.presence = discord.Game(name='in a Digital Haunt...',
                                      url="https://www.twitch.tv/ghostofsparkles", type=1)
         self.archive_file = []
@@ -75,14 +76,17 @@ class CassandraBase(commands.Bot):
         self.session = None
 
     def run(self):
-        super().run(self.token)  # self.token.value / in production
+        """Runs the bot."""
+        super().run(self.token)
 
     async def on_message(self, message):
+        """An event triggered when a message is sent."""
         ctx = await self.get_context(message, cls=CassandraContext)
         await self.invoke(ctx)
 
     async def fetch(self, url: str, headers: dict = None, timeout: float = None,
                     return_type: str = None, **kwargs):
+        """Fetches data from a url via aiohttp."""
 
         async with self.session.get(url, headers=headers, timeout=timeout, **kwargs) as resp:
             if return_type:
@@ -105,6 +109,7 @@ class Union(Converter):
         self.converters = converters
 
     async def convert(self, ctx: CassandraContext, argument: str):
+        """Converts an argument"""
         for converter in self.converters:
             try:
                 return await ctx.command.do_conversion(ctx, converter, argument)
