@@ -25,12 +25,14 @@ class Random:
 
     @command()
     async def cat(self, ctx):
+        """Posts a cat image."""
         await self.get_image(
             ctx, 'http://random.cat/meow', "Cat"
         )
 
     @command()
     async def dog(self, ctx):
+        """Posts a dog image"""
         await self.get_image(
             ctx, 'http://random.dog/woof.json', "Dog"
         )
