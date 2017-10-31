@@ -2,7 +2,6 @@ import discord
 from discord.ext.commands import command
 
 
-
 class Random:
     def __init__(self, bot):
         self.bot = bot
