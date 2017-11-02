@@ -429,8 +429,8 @@ class HelpPaginator(Pages):
         self.embed.title = self.title
 
         if hasattr(self, '_is_bot'):
-            value = 'Beep Boop!\nI am Robo-Tom and I am here to serve TomCord!'
-            self.embed.add_field(name='Who Is TomBot?', value=value, inline=False)
+            value = 'Cassandra Help!'
+            self.embed.add_field(name='Cassandra', value=value, inline=False)
 
         self.embed.set_footer(text=f'Use "{self.prefix}help command" for more info on a command.')
 
