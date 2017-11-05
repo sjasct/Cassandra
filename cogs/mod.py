@@ -15,9 +15,7 @@ class Mod:
     async def kick(self, ctx, member: discord.Member, *, reason: str="Violation of one or more rules."):
         """Kick a user."""
         await member.send(f'You have been kicked for the following issue:\n{reason}')
-        await asyncio.sleep(5)
         await member.kick(reason=reason)
-        await asyncio.sleep(5)
         await ctx.send(f'Kicked {member} | Reason: {reason}')
 
     @command()
@@ -32,7 +30,7 @@ class Mod:
     async def softban(self, ctx, member: discord.Member, *, reason: str="Violation of one or more rules."):
         """Softban a user."""
         await member.send(f'You have been softbanned for the the following issue:\n{reason}')
-        await member.ban(reason=reason, delete_message_days=2)
+        await member.ban(reason=reason, delete_message_days=5)
         await member.unban()
         await ctx.send(f'Softbanned {member} | Reason: {reason}')
 
