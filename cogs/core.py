@@ -12,10 +12,11 @@ from utils import checks
 DISCORD_INVITE = r'discord(?:app\.com|\.gg)[\/invite\/]?(?:(?!.*[Ii10OolL]).[a-zA-Z0-9]{5,6}|[a-zA-Z0-9\-]{2,32})'
 
 INVITE_WHITELIST = [
-    "https://discord.gg/CMnKYPA"
-    "http://discord.gg/Sg3Wznq"
-    "https://discord.gg/AJMHQCM"
-    "https://discord.gg/atKZZ7y"
+    "discord.gg/CMnKYPA",
+    "discord.gg/Sg3Wznq",
+    "discord.gg/AJMHQCM",
+    "discord.gg/atKZZ7y",
+    "discord.gg/sparkles",
 ]
 
 OPUS_LIBS = [
@@ -141,7 +142,6 @@ class Core:
                 # Ping Mention Mod Log Embed
                 alert_embed = discord.Embed(
                     title="Ping Role Mention",
-                    description=f'User: **{message.author.name}** \nChannel: {message.channel.name}',
                     color=discord.Color.red()
                 )
                 alert_embed.add_field(
@@ -151,6 +151,10 @@ class Core:
                 alert_embed.add_field(
                     name="Channel",
                     value=f"{message.channel.name}({message.channel.id})"
+                )
+                alert_embed.add_field(
+                    name="Message",
+                    value=message.content
                 )
                 alert_embed.set_thumbnail(url=message.author.avatar_url)
                 alert_embed.set_footer(text='Abuse Notification')
