@@ -98,7 +98,6 @@ class Core:
         if discord.utils.get(self.backup_server.channels, name=channel_name):
             ar_msg = [
                 f"{edit}**Author** - `{message.author}` (`{message.author.id}`)"
-                f" **Channel** - `{message.channel.name}` (`{message.channel.id}`)"
                 f" **Message ID** - `{message.id}`"
                 f" {before if edit else ''}**Message** - \"{message.clean_content}\""
             ]
@@ -106,6 +105,7 @@ class Core:
             channel_name = "ar-other"
             ar_msg = [
                 f"{edit}**Author** - `{message.author}` (`{message.author.id}`)"
+                f" **Channel** - `{message.channel.name}` (`{message.channel.id}`)"
                 f" **Message ID** - `{message.id}`"
                 f" {before if edit else ''}**Message** - \"{message.clean_content}\""
             ]
