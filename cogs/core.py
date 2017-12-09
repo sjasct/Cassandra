@@ -103,7 +103,7 @@ class Core:
         if discord.utils.get(self.backup_server.channels, name=channel_name):
             ar_msg = [
                 f"{edit}**Author** - `{message.author}` (`{message.author.id}`)"
-                f" **Channel** - `{message.channel.name}` (`{message.channel.id}`)"
+                
                 f" **Message ID** - `{message.id}`"
                 f" {before if edit else ''}**Message** - \"{message.clean_content}\""
             ]
@@ -111,6 +111,7 @@ class Core:
             channel_name = "ar-other"
             ar_msg = [
                 f"{edit}**Author** - `{message.author}` (`{message.author.id}`)"
+                f" **Channel** - `{message.channel.name}` (`{message.channel.id}`)"
                 f" **Message ID** - `{message.id}`"
                 f" {before if edit else ''}**Message** - \"{message.clean_content}\""
             ]
@@ -173,7 +174,7 @@ class Core:
             if message.content == "cassandra can you hear me":
                 if member_voice:
                     vc = await message.author.voice.channel.connect()
-                    source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('audio\/ss1.mp3'))
+                    source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('audio/ss1.mp3'))
                     vc.play(source)
                     await asyncio.sleep(4)
                     await vc.disconnect()
@@ -183,7 +184,7 @@ class Core:
             elif message.content in ["cassandra are you ready to begin", "are you ready to begin"]:
                 if member_voice:
                     vc = await message.author.voice.channel.connect()
-                    source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('audio\/ss2.mp3'))
+                    source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('audio/ss2.mp3'))
                     vc.play(source)
                     await asyncio.sleep(5)
                     await vc.disconnect()
