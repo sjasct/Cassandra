@@ -40,6 +40,8 @@ class JoinLeave:
         join_embed.set_thumbnail(url=member.avatar_url)
         await self.get_joinleave_channel(member).send(embed=join_embed)
 
+        await member.add_roles(discord.utils.get(member.guild.roles, name='Elevens [Users]'))
+
     async def on_member_remove(self, member):
         leave_embed = discord.Embed(
             title=f"{member} has left the server.",
