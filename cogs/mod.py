@@ -37,9 +37,11 @@ class Mod:
         await ctx.send(f'Softbanned {member} | Reason: {reason}')
 
     @command()
-    async def hackban(self, ctx, member_id: discord.Object, *, reason: str="Violation of one or more rules."):
+    async def hackban(self, ctx, member_id: int, *, reason: str="Violation of one or more rules."):
         """Ban a user."""
+        member_id = discord.Object(member_id)
         await ctx.guild.ban(user=member_id, reason=reason)
+        await ctx.send(f'Banned {member_id.name}')
 
     @command()
     async def purge(self, ctx, count: int):
