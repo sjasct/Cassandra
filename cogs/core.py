@@ -34,6 +34,7 @@ class Core:
         self.whitelisted_servers = None
         self.backup_server = None
         self.mod_log = None
+        self.blacklist = [301449773200834561]
 
     @staticmethod
     def get_invites(message):
@@ -193,6 +194,11 @@ class Core:
                     await asyncio.sleep(1)
                     await message.channel.send("I'm ready.")
         # Archiver
+        if message.author.id in self.blacklist:
+            await message.channel.send(f'Thank you for your time at {message.guild.name}. Understandable, have a nice day, {message.author.mention}.')
+            await message.author.edit(roles=[], reason='r/Area11Banned Special')
+            await message.author.send(f'You have been banned from {message.guild.name}. Hope you have a good evening.')
+            await message.author.ban(reason='r/Area11Banned Special')
         await self.archive(message, False)
 
 
