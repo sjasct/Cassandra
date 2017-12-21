@@ -96,6 +96,9 @@ class CassandraBase(commands.Bot):
                 return resp, await cont()
             else:
                 return resp, None
+    
+    def __global_check(self, ctx):
+        return ctx.channel.name == 'bots' or discord.utils.get(ctx.guild.roles, name='Mods') in ctx.author.roles
 
 
 class Cassandra(CassandraBase):
