@@ -34,7 +34,7 @@ class JoinLeave:
             value=f"{member.created_at} UTC"
         )
         join_embed.set_footer(
-            text="User Joined",
+            text=f"User Joined | {member.guild.member_count} members",
             icon_url=member.guild.icon_url_as(format='webp', size=1024)
         )
         join_embed.set_thumbnail(url=member.avatar_url)
@@ -60,7 +60,7 @@ class JoinLeave:
             value=f"{member.created_at} UTC"
         )
         leave_embed.set_footer(
-            text="User Left",
+            text=f"User Left | {member.guild.member_count} members",
             icon_url=member.guild.icon_url_as(format='webp', size=1024)
         )
         leave_embed.set_thumbnail(url=member.avatar_url)
