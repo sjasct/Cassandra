@@ -19,6 +19,8 @@ class Random:
             async with ctx.session.get(link) as r:
                 res = await r.json()
                 image = res['url']
+        if name is "Nick's great":
+            image = link
         image_embed.set_image(url=image)
         await ctx.send(embed=image_embed)
 
@@ -36,6 +38,12 @@ class Random:
             ctx, 'http://random.dog/woof.json', "Dog"
         )
 
+    @command()
+    async def praise_nick(self, ctx):
+        """nick's great"""
+        await self.get_image(
+            ctx, "http://www.mytinyphone.com/uploads/users/acdcslvr/377671.jpg", "Nick's great"
+        )
 
 def setup(bot):
     bot.add_cog(Random(bot))
