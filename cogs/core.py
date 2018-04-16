@@ -78,10 +78,11 @@ class Core:
         """A `bot` event triggered when the bot authentication has been successful.
          Notifies console when `bot` is ready."""
 
-        testingservers = json.load(open('testingdata.json'))
 
         testvalue = self.check_testing()
         if(testvalue == True):
+            testingservers = json.load(open('testingdata.json'))
+
             self.main_server = self.bot.get_guild(testingservers["main_server"])
             self.backup_server = self.bot.get_guild(testingservers["backup_server"]) 
         else:
