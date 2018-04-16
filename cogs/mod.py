@@ -25,7 +25,7 @@ class Mod:
         """Ban a user."""
         await member.send(f'You have been kicked for the following issue:\n{reason}')
         await asyncio.sleep(5)
-        await member.ban(reason=reason)
+        await member.ban(reason=reason, delete_message_days=0)
         await ctx.send(f'Banned {member} | Reason: {reason}')
 
     @command()
@@ -83,6 +83,14 @@ class Mod:
             await ctx.send(f"There isn't a rule `{rule}`! There are only 11 rules.")
         else:
             await ctx.send(self.get_rule()[f"{rule}"])
+
+    @command(name="presence")
+    async def presence(self, ctx, game: str, presType: int):
+
+        if(presType < 4 and presType >= 0):
+            await client.change_presence(game=discord.Game(name=game, type=presType))
+
+        
 
 
 def setup(bot):

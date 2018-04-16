@@ -34,7 +34,7 @@ class Core:
         self.whitelisted_servers = None
         self.backup_server = None
         self.mod_log = None
-        self.blacklist = [301449773200834561]
+        self.blacklist = []
 
     @staticmethod
     def get_invites(message):

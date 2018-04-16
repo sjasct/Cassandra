@@ -77,7 +77,7 @@ class CommandErrorHandler:
         embed.add_field(name='Location', value=f'Guild: {ctx.guild}\nChannel: {ctx.channel}')
         embed.add_field(name='Message', value=ctx.message.content)
 
-        await ctx.bot.get_channel(368477860387880960).send(embed=embed)
+        await ctx.bot.get_channel(391653147233222656).send(embed=embed)
 
 
 def setup(bot):
