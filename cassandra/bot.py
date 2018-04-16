@@ -2,6 +2,8 @@ import datetime
 import json
 import discord
 import os
+import sys
+import json
 from discord.ext import commands
 from discord.ext.commands.converter import *
 
@@ -31,8 +33,16 @@ class CassandraContext(commands.Context):
 
 class CassandraBase(commands.Bot):
     """This is the class that initializes the bot."""
+
+    def get_token(self):
+            if(len(sys.argv)>=2 and sys.argv[1] == "-test"):
+                data = json.load(open('testingdata.json'))
+                return data["test_bot_token"]
+            else:
+                return os.environ['TOKEN']
     def __init__(self):
-        self.token = os.environ['TOKEN']
+        self.token = self.get_token()
+        print(self.get_token())
         self.presence = discord.Game(name='in a Digital Haunt...',
                                      url="https://www.twitch.tv/ghostofsparkles", type=1)
         self.archive_file = []
@@ -57,6 +67,7 @@ class CassandraBase(commands.Bot):
         def get_game():
             """Fetches game presence."""
             return self.presence
+
 
         super().__init__(command_prefix=get_prefix(), game=get_game(), description=get_description(), pm_help=None,
                          help_attrs=dict(hidden=True))

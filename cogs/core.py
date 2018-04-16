@@ -3,6 +3,8 @@ import datetime
 import re
 import textwrap
 from io import BytesIO
+import sys
+import json
 
 import aiohttp
 import discord
@@ -43,6 +45,11 @@ class Core:
 
         return regex
 
+    def check_testing(self):
+        if(len(sys.argv)>=2 and sys.argv[1] == "-test"):
+                return True
+        return False
+
     @staticmethod
     def load_opus_lib(opus_libs=OPUS_LIBS):
         """Loads LibOpus For `bot`."""
@@ -70,13 +77,22 @@ class Core:
     async def on_ready(self):
         """A `bot` event triggered when the bot authentication has been successful.
          Notifies console when `bot` is ready."""
-        self.main_server = self.bot.get_guild(212982046992105473)
+
+        testingservers = json.load(open('testingdata.json'))
+
+        testvalue = self.check_testing()
+        if(testvalue == True):
+            self.main_server = self.bot.get_guild(testingservers["main_server"])
+            self.backup_server = self.bot.get_guild(testingservers["backup_server"]) 
+        else:
+            self.main_server = self.bot.get_guild(212982046992105473)
+            self.backup_server = self.bot.get_guild(349652162948759555) 
+
         self.whitelisted_servers = [
-            self.main_server, # a11discord
+            self.main_server, 
             self.bot.get_guild(173152280634327040), #avinchtest
             self.bot.get_guild(338732924893659137) #cassbotpy
         ]
-        self.backup_server = self.bot.get_guild(349652162948759555) 
         self.mod_log = discord.utils.get(self.main_server.channels, name="mod-log")
         self.bot.session = aiohttp.ClientSession()
         print(textwrap.dedent(f"""
