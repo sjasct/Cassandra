@@ -1,5 +1,7 @@
 {
     "main_server": MAIN_SERVER_ID,
     "backup_server": BACKUP_SERVER_ID,
-    "test_bot_token": "TEST_BOT_TOKEN"
+    "test_bot_token": "TEST_BOT_TOKEN",
+    "gh_username": "GITHUB_ACCOUNT_USERNAME",
+    "gh_pass":"GITHUB_ACCOUNT_PASSWORD"
 }
