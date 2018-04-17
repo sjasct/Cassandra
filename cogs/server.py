@@ -7,6 +7,9 @@ from bs4 import BeautifulSoup
 from enum import Enum
 import asyncio
 import datetime
+from github import Github
+import sys
+import json
 
 FULLWIDTH_OFFSET = 65248
 
@@ -31,6 +34,8 @@ class RPSParser:
 
 
 class Server:
+
+
     def __init__(self, bot):
         self.bot = bot
         #print(bot.api_keys["WEATHER"])
@@ -116,20 +121,22 @@ class Server:
         await ctx.send(message)
 
     @command()
-    async def suggest(self, ctx, *, suggestion: str=None):
-        """Suggest features you hope to see on this bot!"""
-        if suggestion is None:
-            await ctx.send('Please input your suggestion.')
+    async def suggest(self, ctx, *, request: str=None):
+        author = f"{ctx.author.name}#{ctx.author.discriminator}"
+        if(len(sys.argv)>=2 and sys.argv[1] == "-test"):
+            testinglogin = json.load(open('testingdata.json'))
+            gh_client = Github(testinglogin["gh_username"], testinglogin["gh_pass"])
         else:
-            suggestions_channel = self.bot.get_channel(345211914218897409)
-            await ctx.send('Feedback Taken.')
-            suggestion_embed = Embed(
-                title="Suggestion",
-                description=f'Suggestion: *{suggestion} by {ctx.author}*',
-                color=Color.purple()
-            )
-            suggestion_embed.set_footer(text='Suggestion for Cassandra')
-            await suggestions_channel.send(embed=suggestion_embed)
+            gh_client = Github("CassandraBot", environ["CASS_GH_PASS"])
+
+        cass_repo = gh_client.get_repo("avinch/cassandra")
+        label = [cass_repo.get_label("request")]
+        issue_body = f"Requested by {author}"
+        cass_repo.create_issue(title=request, body=issue_body, labels=label)
+        
+        ctx.message.add_reaction('👍')
+        await ctx.send("Suggestion sent! Thank you for your feedback.")
+        
 
     @group(name='id')
     async def id_(self, ctx, *, argument: Union(Emoji, Role, TextChannel, VoiceChannel, Member, User)):

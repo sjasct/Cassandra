@@ -79,6 +79,5 @@ class CommandErrorHandler:
 
         await ctx.bot.get_channel(391653147233222656).send(embed=embed)
 
-
 def setup(bot):
     bot.add_cog(CommandErrorHandler())
