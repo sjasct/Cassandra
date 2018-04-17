@@ -42,7 +42,6 @@ class CassandraBase(commands.Bot):
                 return os.environ['TOKEN']
     def __init__(self):
         self.token = self.get_token()
-        print(self.get_token())
         self.presence = discord.Game(name='in a Digital Haunt...',
                                      url="https://www.twitch.tv/ghostofsparkles", type=1)
         self.archive_file = []

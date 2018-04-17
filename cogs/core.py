@@ -47,7 +47,7 @@ class Core:
 
     def check_testing(self):
         if(len(sys.argv)>=2 and sys.argv[1] == "-test"):
-                return True
+            return True
         return False
 
     @staticmethod
@@ -82,7 +82,6 @@ class Core:
         testvalue = self.check_testing()
         if(testvalue == True):
             testingservers = json.load(open('testingdata.json'))
-
             self.main_server = self.bot.get_guild(testingservers["main_server"])
             self.backup_server = self.bot.get_guild(testingservers["backup_server"]) 
         else:

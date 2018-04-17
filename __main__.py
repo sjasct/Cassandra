@@ -12,6 +12,5 @@ def setup_logging():
 
 
 if __name__ == '__main__':
-    print("test")
     Cassandra().run()
     setup_logging()
