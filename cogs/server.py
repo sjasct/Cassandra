@@ -126,17 +126,20 @@ class Server:
         if(len(sys.argv)>=2 and sys.argv[1] == "-test"):
             testinglogin = json.load(open('testingdata.json'))
             gh_client = Github(testinglogin["gh_username"], testinglogin["gh_pass"])
+            cass_repo = gh_client.get_repo("CassandraBot/CassGHIssueTest")
         else:
             gh_client = Github("CassandraBot", environ["CASS_GH_PASS"])
+            cass_repo = gh_client.get_repo("Avinch/Cassandra")
 
-        cass_repo = gh_client.get_repo("avinch/cassandra")
         label = [cass_repo.get_label("request")]
         issue_body = f"Requested by {author}"
-        cass_repo.create_issue(title=request, body=issue_body, labels=label)
-        
-        ctx.message.add_reaction('👍')
-        await ctx.send("Suggestion sent! Thank you for your feedback.")
-        
+        issue = cass_repo.create_issue(title=request, body=issue_body, labels=label)
+                
+        embed = Embed(title="Thank you for your suggestion!", colour=0x33cc82, type="rich")
+        embed.add_field(name='Suggestion', value=request)
+        embed.add_field(name='Link', value=issue.html_url)
+        await ctx.send(embed=embed)
+
 
     @group(name='id')
     async def id_(self, ctx, *, argument: Union(Emoji, Role, TextChannel, VoiceChannel, Member, User)):
