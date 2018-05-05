@@ -10,7 +10,6 @@ import datetime
 from github import Github
 import sys
 import json
-import re
 
 FULLWIDTH_OFFSET = 65248
 
@@ -167,7 +166,7 @@ class Server:
     async def atom(self, ctx, element):
         """Displays information for a given atom"""
 
-        if not re.match(r"^[A-Za-z]{1,2}$", element):
+        if not element.isalpha() or len(element) > 2:
             await ctx.send("Element symbols only have alphabetical letters and must be between 1-2 characters!")
             return
 
@@ -175,7 +174,7 @@ class Server:
             html = await ctx.bot.fetch(ctx.session, f"http://www.chemicalelements.com/elements/{element.lower()}.html", timeout=15,
                                return_type='text')
         except:
-            await ctx.send(f"Could not find and element with the symbol \"{element.upper()}\"")
+            await ctx.send(f"Could not find an element with the symbol \"{element.upper()}\"")
             return
         soup = BeautifulSoup(html, "html.parser")
 
