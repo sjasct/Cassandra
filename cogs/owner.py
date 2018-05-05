@@ -74,7 +74,7 @@ class Owner:
                 await ctx.send(f'```py\n{value}{ret}\n```')
 
     @is_owner()
-    @command(name='reload', hidden=True)
+    @command(name='reload', hidden=True, aliases=["r"])
     async def reload(self, ctx, *, cog: str):
         """Reloads a module."""
         try:
