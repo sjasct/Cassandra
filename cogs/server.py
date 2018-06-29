@@ -44,10 +44,12 @@ class Server:
 
         try:
 
-            # DISABLED FOR NOW
-
+            #DISABLED FOR NOW
+            
             #self._weather_key = environ["WEATHER"]
             #self._nasa_key = environ['NASA']
+
+            print()
         except KeyError:
             print("KEYERROR")
             self._weather_key = bot.api_keys["WEATHER"]
