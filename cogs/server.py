@@ -43,11 +43,9 @@ class Server:
         #self._nasa_key = environ['NASA'] or bot.api_keys["NASA"]
 
         try:
-
-            #DISABLED FOR NOW
             
-            #self._weather_key = environ["WEATHER"]
-            #self._nasa_key = environ['NASA']
+            self._weather_key = environ["API_WEATHER"]
+            self._nasa_key = environ['API_NASA']
 
             print()
         except KeyError:
@@ -357,8 +355,6 @@ class Server:
     @command(name='weather', aliases=['w', 'conditions'])
     async def get_weather(self, ctx, *, location: str = None):
 
-        # TODO: DISABLED COMMAND
-        return await ctx.send("Sorry, but this command is disabled for now.")
         
         """Check the weather in a location"""
         if location is None:
@@ -461,8 +457,6 @@ class Server:
     @nasa.command(name='curiosity')
     async def curiosity_photos(self, ctx, camerainp: str = None, date: str = None):
         
-        # TODO: DISABLED COMMAND
-        return await ctx.send("Sorry, but this command is disabled for now.")
 
         """Retrieve photos from Mars Rover: Curiosity.
         If date is None, the latest photos will be returned. A date is not guaranteed to have photos.
@@ -558,8 +552,6 @@ class Server:
     @nasa.command(name='apod', aliases=['iotd'])
     async def nasa_apod(self, ctx):
         
-        # TODO: DISABLED COMMAND
-        return await ctx.send("Sorry, but this command is disabled for now.")
         
         """Returns NASA's Astronomy Picture of the day."""
         # todo Add the ability to select a date.
@@ -585,10 +577,6 @@ class Server:
 
     @nasa.command(name='epic', aliases=['EPIC'])
     async def nasa_epic(self, ctx):
-
-
-        # TODO: DISABLED COMMAND
-        return await ctx.send("Sorry, but this command is disabled for now.")
         
 
         """Returns NASA's most recent EPIC image."""
