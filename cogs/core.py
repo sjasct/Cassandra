@@ -147,6 +147,10 @@ class Core:
     async def on_message(self, message):
         """A `bot` event triggered when a message is sent."""
         ping_role = discord.utils.get(message.guild.roles, name="ping")
+
+        if (message.content.find("leveled up") != -1) and message.author.id == "172002275412279296":
+            await message.channel.send("<:ding:230664475554873344>")
+
         # Bot Checker
         if message.author.bot:
             return
