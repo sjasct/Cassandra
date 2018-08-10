@@ -115,6 +115,26 @@ class Server:
                 """
             )
 
+    @role.command(
+        name="ping",
+        aliases=["p"]
+    )
+    async def ping_(self, ctx, action):
+        if utils.get(ctx.guild.roles, name="Mods") in ctx.message.author.roles:
+
+            ping_role = utils.get(ctx.guild.roles, name="ping")
+
+            if action.lower() == "enable":
+                await ping_role.edit(mentionable=True, reason="Enabled mentioning of ping role")
+                await ctx.send("Ping role enabled")
+            elif action.lower() == "disable":
+                await ping_role.edit(mentionable=False, reason="Disabled mentioning of ping role")
+                await ctx.send("Ping role disabled")
+            else:
+                await ctx.send(f"`{action}` is not a valid action!")
+        else:
+            await ctx.send("You don't have permission to do this!")
+
     @command()
     async def trello(self, ctx):
         """Cassandra's Trello Link!"""
