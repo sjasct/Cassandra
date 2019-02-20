@@ -69,12 +69,14 @@ class Server:
         Available Roles List:
             - ping
             - battlenet
+            - gamenight
         If the argument given is not a valid role in the guild, it will safely ignore it.
         If the argument is a valid role in the guild and is not in the available roles list, it will flag it as invalid.
         """
         whitelisted_roles = [
             utils.get(ctx.guild.roles, name="ping"),
-            utils.get(ctx.guild.roles, name="battlenet")
+            utils.get(ctx.guild.roles, name="battlenet"),
+            utils.get(ctx.guild.roles, name="gamenight")
         ]
         if role in whitelisted_roles:
             await ctx.author.add_roles(role, reason="Used role command")
@@ -97,12 +99,14 @@ class Server:
         Available Roles List:
             - ping
             - battlenet
+            - gamenight
         If the argument given is not a valid role in the guild, it will safely ignore it.
         If the argument is a valid role in the guild and is not in the available roles list, it will flag it as invalid.
         """
         whitelisted_roles = [
             utils.get(ctx.guild.roles, name="ping"),
-            utils.get(ctx.guild.roles, name="battlenet")
+            utils.get(ctx.guild.roles, name="battlenet"),
+            utils.get(ctx.guild.roles, name="gamenight")
         ]
         if role in whitelisted_roles:
             await ctx.author.remove_roles(role, reason="Used role command")
@@ -116,24 +120,55 @@ class Server:
             )
 
     @role.command(
+        name="enable",
+        aliases=["e"]
+    )
+    async def enable_(self, ctx, role: Role):
+        """
+        Enables mention feature of role
+        Available Roles List:
+            - ping
+            - gamenight
+        """
+        whitelisted_roles = [
+            utils.get(ctx.guild.roles, name="ping"),
+            utils.get(ctx.guild.roles, name="gamenight")
+        ]
+
+        if utils.get(ctx.guild.roles, name="Mods") in ctx.message.author.roles:
+            if role in whitelisted_roles:
+                await role.edit(mentionable=True, reason="Enabled mentioning of role")
+                await ctx.send(f"Role mentioning for `{role}` has been enabled!")
+    
+    @role.command(
+        name="disable",
+        aliases=["d"]
+    )
+    async def disable_(self, ctx, role: Role):
+        """
+        Disables mention feature of role
+        Available Roles List:
+            - ping
+            - gamenight
+        """
+        whitelisted_roles = [
+            utils.get(ctx.guild.roles, name="ping"),
+            utils.get(ctx.guild.roles, name="gamenight")
+        ]
+
+        if utils.get(ctx.guild.roles, name="Mods") in ctx.message.author.roles:
+            if role in whitelisted_roles:
+                await role.edit(mentionable=False, reason="Disabled mentioning of role")
+                await ctx.send(f"Role mentioning for `{role}` has been disabled!")
+        
+    @role.command(
         name="ping",
         aliases=["p"]
     )
     async def ping_(self, ctx, action):
         if utils.get(ctx.guild.roles, name="Mods") in ctx.message.author.roles:
 
-            ping_role = utils.get(ctx.guild.roles, name="ping")
-
-            if action.lower() == "enable":
-                await ping_role.edit(mentionable=True, reason="Enabled mentioning of ping role")
-                await ctx.send("Ping role enabled")
-            elif action.lower() == "disable":
-                await ping_role.edit(mentionable=False, reason="Disabled mentioning of ping role")
-                await ctx.send("Ping role disabled")
-            else:
-                await ctx.send(f"`{action}` is not a valid action!")
-        else:
-            await ctx.send("You don't have permission to do this!")
+            await ctx.send("Deprecated command! Please use `-role [enable/disable] ping` instead")
 
     @command()
     async def trello(self, ctx):
