@@ -147,6 +147,7 @@ class Core:
     async def on_message(self, message):
         """A `bot` event triggered when a message is sent."""
         ping_role = discord.utils.get(message.guild.roles, name="ping")
+        gamenight_role = discord.utils.get(message.guild.roles, name="gamenight")
 
         if (message.content.find("leveled up") != -1) and message.author.id == "172002275412279296":
             await message.channel.send("<:ding:230664475554873344>")
@@ -160,15 +161,15 @@ class Core:
         # Non-Mod Checker
         if not checks.is_mod(message.guild, message.author):
             # Non-Mod Ping Mention Checker
-            if ping_role.id in message.raw_role_mentions:
-                msg = f"**Do not abuse the ping role!** {message.author.mention}"
+            if ping_role.id in message.raw_role_mentions or gamenight_role.id in message.raw_role_mentions:
+                msg = f"**Do not abuse pingable roles!** {message.author.mention}"
                 # Ping Mention Consequence
                 await message.channel.send(msg)
                 await message.delete()
-                await message.author.edit(roles=[], reason="Ping Role Mention")
+                await message.author.edit(roles=[], reason="Pingable Role Mention")
                 # Ping Mention Mod Log Embed
                 alert_embed = discord.Embed(
-                    title="Ping Role Mention",
+                    title="Pingable Role Mention",
                     description=f'User: **{message.author.name}** \nChannel: {message.channel.name}',
                     color=discord.Color.red()
                 )
