@@ -35,12 +35,15 @@ class RPSParser:
 
 class Server:
 
-
+    
     def __init__(self, bot):
         self.bot = bot
         #print(bot.api_keys["WEATHER"])
         #self._weather_key = environ["WEATHER"] or bot.api_keys["WEATHER"]
         #self._nasa_key = environ['NASA'] or bot.api_keys["NASA"]
+
+        self.self_assignable_roles = []
+        self.configurable_roles = []
 
         try:
             
@@ -52,6 +55,18 @@ class Server:
             print("KEYERROR")
             self._weather_key = bot.api_keys["WEATHER"]
             self._nasa_key = bot.api_keys["NASA"]
+    
+    def populateRoleLists(self, ctx):
+        self.self_assignable_roles = [
+            utils.get(ctx.guild.roles, name="ping"),
+            utils.get(ctx.guild.roles, name="battlenet"),
+            utils.get(ctx.guild.roles, name="gamenight")
+        ]
+
+        self.configurable_roles = [
+            utils.get(ctx.guild.roles, name="ping"),
+            utils.get(ctx.guild.roles, name="gamenight")
+        ]
 
     @group()
     async def role(self, ctx):
@@ -66,19 +81,13 @@ class Server:
     async def add_(self, ctx, role: Role):
         """
         Adds a role.
-        Available Roles List:
-            - ping
-            - battlenet
-            - gamenight
         If the argument given is not a valid role in the guild, it will safely ignore it.
         If the argument is a valid role in the guild and is not in the available roles list, it will flag it as invalid.
         """
-        whitelisted_roles = [
-            utils.get(ctx.guild.roles, name="ping"),
-            utils.get(ctx.guild.roles, name="battlenet"),
-            utils.get(ctx.guild.roles, name="gamenight")
-        ]
-        if role in whitelisted_roles:
+        if(len(self.self_assignable_roles) == 0):
+            self.populateRoleLists(ctx)
+
+        if role in self.self_assignable_roles:
             await ctx.author.add_roles(role, reason="Used role command")
             await ctx.send(f"Added `{role}` to {ctx.author.mention}.")
         else:
@@ -96,19 +105,14 @@ class Server:
     async def remove_(self, ctx, role: Role):
         """
         Removes a role.
-        Available Roles List:
-            - ping
-            - battlenet
-            - gamenight
         If the argument given is not a valid role in the guild, it will safely ignore it.
         If the argument is a valid role in the guild and is not in the available roles list, it will flag it as invalid.
         """
-        whitelisted_roles = [
-            utils.get(ctx.guild.roles, name="ping"),
-            utils.get(ctx.guild.roles, name="battlenet"),
-            utils.get(ctx.guild.roles, name="gamenight")
-        ]
-        if role in whitelisted_roles:
+
+        if(len(self.self_assignable_roles) == 0):
+            self.populateRoleLists(ctx)
+
+        if role in self.self_assignable_roles:
             await ctx.author.remove_roles(role, reason="Used role command")
             await ctx.send(f"Removed `{role}` from {ctx.author.mention}.")
         else:
@@ -126,17 +130,12 @@ class Server:
     async def enable_(self, ctx, role: Role):
         """
         Enables mention feature of role
-        Available Roles List:
-            - ping
-            - gamenight
         """
-        whitelisted_roles = [
-            utils.get(ctx.guild.roles, name="ping"),
-            utils.get(ctx.guild.roles, name="gamenight")
-        ]
+        if(len(self.configurable_roles) == 0):
+            self.populateRoleLists(ctx)
 
         if utils.get(ctx.guild.roles, name="Mods") in ctx.message.author.roles:
-            if role in whitelisted_roles:
+            if role in self.configurable_roles:
                 await role.edit(mentionable=True, reason="Enabled mentioning of role")
                 await ctx.send(f"Role mentioning for `{role}` has been enabled!")
     
@@ -147,19 +146,30 @@ class Server:
     async def disable_(self, ctx, role: Role):
         """
         Disables mention feature of role
-        Available Roles List:
-            - ping
-            - gamenight
         """
-        whitelisted_roles = [
-            utils.get(ctx.guild.roles, name="ping"),
-            utils.get(ctx.guild.roles, name="gamenight")
-        ]
+        if(len(self.configurable_roles) == 0):
+            self.populateRoleLists(ctx)
 
         if utils.get(ctx.guild.roles, name="Mods") in ctx.message.author.roles:
-            if role in whitelisted_roles:
+            if role in self.configurable_roles:
                 await role.edit(mentionable=False, reason="Disabled mentioning of role")
                 await ctx.send(f"Role mentioning for `{role}` has been disabled!")
+
+    @role.command(
+        name="list",
+        aliases=["l"]
+    )
+    async def list_(self, ctx):
+        message = "All self-assignable roles:"
+        if(len(self.self_assignable_roles) == 0):
+            self.populateRoleLists(ctx)
+        for role in self.self_assignable_roles:
+            message += f"\n\t- `{role}`"
+
+        message += "\n\nYou can add/remove these roles by typing `-role [add/remove] [role name]`"
+
+        await ctx.send(message)
+
         
     @role.command(
         name="ping",
