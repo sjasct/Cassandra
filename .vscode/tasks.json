@@ -5,7 +5,7 @@
     "tasks": [
         {
             "taskName": "Run with Test Bot",
-            "command": "python __main__.py -test",
+            "command": "py __main__.py -test",
             "type": "shell",
             "group": {
                 "kind": "build",
@@ -20,7 +20,7 @@
         },
         {
             "taskName": "Run with Cassandra",
-            "command": "python __main__.py",
+            "command": "py __main__.py",
             "type": "shell",
             "group": {
                 "kind": "build",
