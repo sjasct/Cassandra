@@ -23,10 +23,15 @@ class Mod:
     @command()
     async def ban(self, ctx, member: discord.Member, *, reason: str="Violation of one or more rules."):
         """Ban a user."""
-        await member.send(f'You have been kicked for the following issue:\n{reason}')
-        await asyncio.sleep(5)
-        await member.ban(reason=reason, delete_message_days=0)
-        await ctx.send(f'Banned {member} | Reason: {reason}')
+        if(member.id == 173243885500366848 and member == ctx.message.author):
+            await ctx.send(f"Don't do this again, {ctx.message.author.name}")
+        elif (member == ctx.message.author):
+            await ctx.send("You can't ban yourself, silly!")
+        else:
+            await member.send(f'You have been banned for the following issue:\n{reason}')
+            await asyncio.sleep(5)
+            await member.ban(reason=reason, delete_message_days=0)
+            await ctx.send(f'Banned {member} | Reason: {reason}')
 
     @command()
     async def softban(self, ctx, member: discord.Member, *, reason: str="Violation of one or more rules."):
