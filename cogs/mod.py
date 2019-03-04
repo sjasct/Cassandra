@@ -43,7 +43,7 @@ class Mod:
         try:
             self.check_user(ctx, member)
         except CannotRemoveMember as e:
-            return await ctx.send(e)
+            return await ctx.send(str(e))
         else:
             await member.send(f'You have been kicked for the following issue:\n{reason}')
             await asyncio.sleep(5)
