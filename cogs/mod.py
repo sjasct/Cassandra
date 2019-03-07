@@ -19,7 +19,7 @@ class Mod:
     def check_user(self, ctx, member: discord.Member):
         mod = discord.utils.get(ctx.guild.roles, name="Mods") in ctx.message.author.roles
         if mod:
-            raise CannotBanMember("The member has the `Mods` role.")
+            raise CannotRemoveMember("You can't do that, they have the `Mods` role.")
         else:
             return
 
@@ -29,7 +29,7 @@ class Mod:
         try:
             self.check_user(ctx, member)
         except CannotRemoveMember as e:
-            return await ctx.send(e)
+            return await ctx.send(str(e))
         else:
             await member.send(f'You have been kicked for the following issue:\n{reason}')
             await asyncio.sleep(5)
@@ -56,7 +56,7 @@ class Mod:
         try:
             self.check_user(ctx, member)
         except CannotRemoveMember as e:
-            return await ctx.send(e)
+            return await ctx.send(str(e))
         else:
             await member.send(f'You have been softbanned for the the following issue:\n{reason}')
             await member.ban(reason=reason, delete_message_days=2)
@@ -69,7 +69,7 @@ class Mod:
         try:
             self.check_user(ctx, member)
         except CannotRemoveMember as e:
-            return await ctx.send(e)
+            return await ctx.send(str(e))
         else:
             member_id = discord.Object(member_id)
             await ctx.guild.ban(user=member_id, reason=reason)
