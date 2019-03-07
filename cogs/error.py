@@ -77,7 +77,7 @@ class CommandErrorHandler:
         embed.add_field(name='Location', value=f'Guild: {ctx.guild}\nChannel: {ctx.channel}')
         embed.add_field(name='Message', value=ctx.message.content)
 
-        await ctx.bot.get_channel(391653147233222656).send(embed=embed)
+        await discord.utils.get(ctx.guild.channels, name='cass-errors').send(embed=embed)
 
 def setup(bot):
     bot.add_cog(CommandErrorHandler())

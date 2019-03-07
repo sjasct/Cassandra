@@ -3,6 +3,11 @@ import json
 import discord
 from discord.ext.commands import command
 
+
+class CannotRemoveMember(Exception):
+    pass
+
+
 class Mod:
     """Moderation Commands."""
     def __init__(self, bot):
@@ -10,38 +15,65 @@ class Mod:
 
     def __local_check(self, ctx):
         return discord.utils.get(ctx.guild.roles, name="Mods") in ctx.message.author.roles
+    
+    def check_user(self, ctx, member: discord.Member):
+        mod = discord.utils.get(ctx.guild.roles, name="Mods") in ctx.message.author.roles
+        if mod:
+            raise CannotRemoveMember("You can't do that, they have the `Mods` role.")
+        else:
+            return
 
     @command()
     async def kick(self, ctx, member: discord.Member, *, reason: str="Violation of one or more rules."):
         """Kick a user."""
-        await member.send(f'You have been kicked for the following issue:\n{reason}')
-        await asyncio.sleep(5)
-        await member.kick(reason=reason)
-        await asyncio.sleep(5)
-        await ctx.send(f'Kicked {member} | Reason: {reason}')
+        try:
+            self.check_user(ctx, member)
+        except CannotRemoveMember as e:
+            return await ctx.send(str(e))
+        else:
+            await member.send(f'You have been kicked for the following issue:\n{reason}')
+            await asyncio.sleep(5)
+            await member.kick(reason=reason)
+            await asyncio.sleep(5)
+            await ctx.send(f'Kicked {member} | Reason: {reason}')
 
     @command()
     async def ban(self, ctx, member: discord.Member, *, reason: str="Violation of one or more rules."):
         """Ban a user."""
-        await member.send(f'You have been kicked for the following issue:\n{reason}')
-        await asyncio.sleep(5)
-        await member.ban(reason=reason, delete_message_days=0)
-        await ctx.send(f'Banned {member} | Reason: {reason}')
+        try:
+            self.check_user(ctx, member)
+        except CannotRemoveMember as e:
+            return await ctx.send(str(e))
+        else:
+            await member.send(f'You have been kicked for the following issue:\n{reason}')
+            await asyncio.sleep(5)
+            await member.ban(reason=reason, delete_message_days=0)
+            await ctx.send(f'Banned {member} | Reason: {reason}')
 
     @command()
     async def softban(self, ctx, member: discord.Member, *, reason: str="Violation of one or more rules."):
         """Softban a user."""
-        await member.send(f'You have been softbanned for the the following issue:\n{reason}')
-        await member.ban(reason=reason, delete_message_days=2)
-        await member.unban()
-        await ctx.send(f'Softbanned {member} | Reason: {reason}')
+        try:
+            self.check_user(ctx, member)
+        except CannotRemoveMember as e:
+            return await ctx.send(str(e))
+        else:
+            await member.send(f'You have been softbanned for the the following issue:\n{reason}')
+            await member.ban(reason=reason, delete_message_days=2)
+            await member.unban()
+            await ctx.send(f'Softbanned {member} | Reason: {reason}')
 
     @command()
     async def hackban(self, ctx, member_id: int, *, reason: str="Violation of one or more rules."):
         """Ban a user."""
-        member_id = discord.Object(member_id)
-        await ctx.guild.ban(user=member_id, reason=reason)
-        await ctx.send(f'Banned {member_id.name}')
+        try:
+            self.check_user(ctx, member)
+        except CannotRemoveMember as e:
+            return await ctx.send(str(e))
+        else:
+            member_id = discord.Object(member_id)
+            await ctx.guild.ban(user=member_id, reason=reason)
+            await ctx.send(f'Banned {member_id.name}')
 
     @command()
     async def purge(self, ctx, count: int):
