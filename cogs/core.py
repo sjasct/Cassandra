@@ -25,7 +25,8 @@ OPUS_LIBS = [
     'libopus-o.x64.dll',
     'libopus-0.dll',
     'libopus.so.0',
-    'libopus.0.dylib'
+    'libopus.0.dylib',
+    'libopus.so'
 ]
 
 

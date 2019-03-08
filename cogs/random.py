@@ -28,7 +28,7 @@ class Random:
     async def cat(self, ctx):
         """Posts a cat image."""
         await self.get_image(
-            ctx, 'http://random.cat/meow', "Cat"
+            ctx, 'http://aws.random.cat/meow', "Cat"
         )
 
     @command()

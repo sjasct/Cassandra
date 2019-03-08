@@ -1,0 +1,20 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Python: Testing Credentials",
+			"type": "python",
+			"request": "launch",
+			"program": "${workspaceFolder}/__main__.py",
+			"args": ["-test"],
+			"console": "integratedTerminal"
+		},
+		{
+			"name": "Python: OS variable credentials",
+			"type": "python",
+			"request": "launch",
+			"program": "${workspaceFolder}/__main__.py",
+			"console": "integratedTerminal"
+		}
+	]
+}
