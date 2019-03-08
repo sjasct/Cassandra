@@ -33,9 +33,6 @@ OPUS_LIBS = [
 class Core:
     def __init__(self, bot):
         self.bot = bot
-        self.main_server = None
-        self.whitelisted_servers = None
-        self.backup_server = None
         self.mod_log = None
         self.blacklist = []
 
@@ -83,18 +80,18 @@ class Core:
         testvalue = self.check_testing()
         if(testvalue == True):
             testingservers = json.load(open('testingdata.json'))
-            self.main_server = self.bot.get_guild(testingservers["main_server"])
-            self.backup_server = self.bot.get_guild(testingservers["backup_server"]) 
+            self.bot.main_server = self.bot.get_guild(testingservers["main_server"])
+            self.bot.backup_server = self.bot.get_guild(testingservers["backup_server"]) 
         else:
-            self.main_server = self.bot.get_guild(212982046992105473)
-            self.backup_server = self.bot.get_guild(349652162948759555) 
+            self.bot.main_server = self.bot.get_guild(212982046992105473)
+            self.bot.backup_server = self.bot.get_guild(349652162948759555) 
 
-        self.whitelisted_servers = [
-            self.main_server, 
+        self.bot.whitelisted_servers = [
+            self.bot.main_server, 
             self.bot.get_guild(173152280634327040), #avinchtest
             self.bot.get_guild(338732924893659137) #cassbotpy
         ]
-        self.mod_log = discord.utils.get(self.main_server.channels, name="mod-log")
+        self.mod_log = discord.utils.get(self.bot.main_server.channels, name="mod-log")
         self.bot.session = aiohttp.ClientSession()
         print(textwrap.dedent(f"""
         =====================================
@@ -104,46 +101,6 @@ class Core:
         Started: {datetime.datetime.utcnow()} UTC
         Opus: {'Loaded' if self.load_opus_lib() else 'Failed'}
         ====================================="""))
-
-    async def archive(self, message, edit: bool, before=None):
-        """Archives messages"""
-        if message.author.bot:
-            return
-        if message.guild not in self.whitelisted_servers:
-            return
-        if edit:
-            edit = '**EDIT** '
-        else:
-            edit = ''
-        channel_name = f"ar-{message.channel.name}"
-        if before:
-            before = f"Before: {before.clean_content} "
-        if discord.utils.get(self.backup_server.channels, name=channel_name):
-            ar_msg = [
-                f"{edit}**Author** - `{message.author}` (`{message.author.id}`)"
-                
-                f" **Message ID** - `{message.id}`"
-                f" {before if edit else ''}**Message** - \"{message.clean_content}\""
-            ]
-        else:
-            channel_name = "ar-other"
-            ar_msg = [
-                f"{edit}**Author** - `{message.author}` (`{message.author.id}`)"
-                f" **Channel** - `{message.channel.name}` (`{message.channel.id}`)"
-                f" **Message ID** - `{message.id}`"
-                f" {before if edit else ''}**Message** - \"{message.clean_content}\""
-            ]
-        ar_msg = ' '.join(parts for parts in ar_msg)
-        self.bot.archive_file.append(ar_msg)
-        ar_channel_1 = discord.utils.get(self.main_server.channels, name=channel_name)
-        ar_channel_2 = discord.utils.get(self.backup_server.channels, name=channel_name)
-        await ar_channel_1.send(ar_msg, files=(await self.filify(message.attachments) if message.attachments else None))
-        await ar_channel_2.send(ar_msg, files=(await self.filify(message.attachments) if message.attachments else None))
-
-    async def on_message_edit(self, before, after):
-        """A `bot` event triggered when a message is edited."""
-        # Archiver
-        await self.archive(after, True, before)
 
     async def on_message(self, message):
         """A `bot` event triggered when a message is sent."""
@@ -157,7 +114,7 @@ class Core:
         if message.author.bot:
             return
         # Main Server Checker
-        if message.guild not in self.whitelisted_servers:
+        if message.guild not in self.bot.whitelisted_servers:
             return
         # Non-Mod Checker
         if not checks.is_mod(message.guild, message.author):
@@ -221,7 +178,6 @@ class Core:
             await message.author.edit(roles=[], reason='r/Area11Banned Special')
             await message.author.send(f'You have been banned from {message.guild.name}. Hope you have a good evening.')
             await message.author.ban(reason='r/Area11Banned Special')
-        await self.archive(message, False)
 
 
 def setup(bot):
