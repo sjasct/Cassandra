@@ -38,21 +38,15 @@ class Server:
     
     def __init__(self, bot):
         self.bot = bot
-        #print(bot.api_keys["WEATHER"])
-        #self._weather_key = environ["WEATHER"] or bot.api_keys["WEATHER"]
-        #self._nasa_key = environ['NASA'] or bot.api_keys["NASA"]
 
         self.self_assignable_roles = []
         self.configurable_roles = []
 
-        try:
-            
+        try:            
             self._weather_key = environ["API_WEATHER"]
             self._nasa_key = environ['API_NASA']
 
-            print()
         except KeyError:
-            print("KEYERROR")
             self._weather_key = bot.api_keys["WEATHER"]
             self._nasa_key = bot.api_keys["NASA"]
     

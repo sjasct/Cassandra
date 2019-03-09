@@ -1,4 +1,3 @@
-# TODO : Finish of all cogs.
 import logging
 from cassandra.bot import Cassandra
 

@@ -95,9 +95,10 @@ class Core:
         self.bot.session = aiohttp.ClientSession()
         print(textwrap.dedent(f"""
         =====================================
-        Discord Version: {discord.__version__}
-        Username: {self.bot.user.name}
-        User ID: {self.bot.user.id}
+        discord.py Version: {discord.__version__}
+        Python Version: {sys.version}
+        Bot Username: {self.bot.user.name}
+        Bot User ID: {self.bot.user.id}
         Started: {datetime.datetime.utcnow()} UTC
         Opus: {'Loaded' if self.load_opus_lib() else 'Failed'}
         ====================================="""))
