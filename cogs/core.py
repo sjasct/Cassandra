@@ -101,7 +101,7 @@ class Core:
         Started: {datetime.datetime.utcnow()} UTC
         Opus: {'Loaded' if self.load_opus_lib() else 'Failed'}
         ====================================="""))
-
+    
     async def on_message(self, message):
         """A `bot` event triggered when a message is sent."""
         ping_role = discord.utils.get(message.guild.roles, name="ping")
