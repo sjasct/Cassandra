@@ -14,7 +14,6 @@ def get_api_keys():
     appdata = get_appdata()
     directory = appdata + '\\cassandra'
     json_config = directory + '\\api_keys.json'
-    print(directory)
     if os.path.exists(directory):
         with open(json_config) as file:
             config = json.load(file)

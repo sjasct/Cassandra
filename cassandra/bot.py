@@ -46,6 +46,10 @@ class CassandraBase(commands.Bot):
                                      url="https://www.twitch.tv/ghostofsparkles", type=1)
         self.archive_file = []
 
+        self.main_server = None
+        self.whitelisted_servers = None
+        self.backup_server = None
+
         def get_package_info():
             """Fetches `arg` in `package.json`."""
             with open("./package.json") as f:
@@ -75,10 +79,10 @@ class CassandraBase(commands.Bot):
         for file in os.listdir("./cogs"):
             if file.endswith(".py"):
                 startup_extensions.append(file.replace('.py', ''))
-        print(startup_extensions)
+        print("Loading extensions..")
         for extension in startup_extensions:
             try:
-                print(f'cogs.{extension}')
+                print(f'Loading cogs.{extension}')
                 self.load_extension(f'cogs.{extension}')
                 print(f'Loaded {extension}')
             except Exception as e:

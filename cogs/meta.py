@@ -154,7 +154,7 @@ class Meta:
         about_embed = discord.Embed(
             description=textwrap.dedent("""
             Discord bot designed for the Area 11 server
-            Check out the GitHub Repository [here](http://bit.ly/CassBotPy)!
+            Check out the GitHub Repository [here](http://github.com/avinch/Cassandra)!
             """),
             color=discord.Color.gold()
         )
