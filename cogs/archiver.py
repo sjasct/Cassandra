@@ -108,7 +108,7 @@ class Archiver:
         return embed
 
     def format_time(self, time):
-        return time.strftime("%Y-%m-%d %H:%m:%S")
+        return time.strftime("%Y-%m-%d %H:%M:%S")
 
     @staticmethod
     async def filify(attachments):
