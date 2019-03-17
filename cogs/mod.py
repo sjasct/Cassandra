@@ -17,7 +17,7 @@ class Mod:
         return discord.utils.get(ctx.guild.roles, name="Mods") in ctx.message.author.roles
     
     def check_user(self, ctx, member: discord.Member):
-        mod = discord.utils.get(ctx.guild.roles, name="Mods") in ctx.message.author.roles
+        mod = discord.utils.get(ctx.guild.roles, name="Mods") in member.roles
         if mod:
             raise CannotRemoveMember("You can't do that, they have the `Mods` role.")
         else:
