@@ -54,14 +54,14 @@ class Server:
         self.self_assignable_roles = [
             utils.get(ctx.guild.roles, name="ping"),
             utils.get(ctx.guild.roles, name="battlenet"),
-            utils.get(ctx.guild.roles, name="gamenight")
-            utils.get(ctx.guild.roles, name="helpliner")
+            utils.get(ctx.guild.roles, name="gamenight"),
+            utils.get(ctx.guild.roles, name="Helpliner")
         ]
 
         self.configurable_roles = [
             utils.get(ctx.guild.roles, name="ping"),
-            utils.get(ctx.guild.roles, name="gamenight")
-            utils.get(ctx.guild.roles, name="helpliner")
+            utils.get(ctx.guild.roles, name="gamenight"),
+            utils.get(ctx.guild.roles, name="Helpliner")
         ]
 
     @group()
