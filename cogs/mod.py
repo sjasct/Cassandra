@@ -66,14 +66,14 @@ class Mod:
     @command()
     async def hackban(self, ctx, member_id: int, *, reason: str="Violation of one or more rules."):
         """Ban a user."""
-        try:
-            self.check_user(ctx, member)
-        except CannotRemoveMember as e:
-            return await ctx.send(str(e))
-        else:
-            member_id = discord.Object(member_id)
-            await ctx.guild.ban(user=member_id, reason=reason)
-            await ctx.send(f'Banned {member_id.name}')
+
+        if discord.utils.get(ctx.guild.members, id=member_id) is not None:
+            await ctx.send(f"Cannot hackban member who is currently in the server.\nPlease use `-ban [member]` instead!`")
+            return
+
+        member = discord.Object(member_id)
+        await ctx.guild.ban(user=member, reason=reason)
+        await ctx.send(f'Banned user with ID of `{member_id}`')
 
     @command()
     async def purge(self, ctx, count: int):
@@ -116,14 +116,12 @@ class Mod:
         else:
             await ctx.send(self.get_rule()[f"{rule}"])
 
-    @command(name="presence")
-    async def presence(self, ctx, game: str, presType: int):
-
-        if(presType < 4 and presType >= 0):
-            await client.change_presence(game=discord.Game(name=game, type=presType))
-
-        
-
+    @command(name="presence", aliases=["game", "changegame"])
+    async def presence(self, ctx, *, game: str = None):
+        if(game == None):
+            await self.bot.change_presence(activity=None)
+            return
+        await self.bot.change_presence(activity=discord.Game(name=game))
 
 def setup(bot):
     bot.add_cog(Mod(bot))
