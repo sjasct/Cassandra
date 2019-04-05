@@ -66,14 +66,14 @@ class Mod:
     @command()
     async def hackban(self, ctx, member_id: int, *, reason: str="Violation of one or more rules."):
         """Ban a user."""
-        try:
-            self.check_user(ctx, member)
-        except CannotRemoveMember as e:
-            return await ctx.send(str(e))
-        else:
-            member_id = discord.Object(member_id)
-            await ctx.guild.ban(user=member_id, reason=reason)
-            await ctx.send(f'Banned {member_id.name}')
+
+        if discord.utils.get(ctx.guild.members, id=member_id) is not None:
+            await ctx.send("Cannot hackban member who is currently in the server.\nPlease use `-ban [member]` instead!`")
+            return
+
+        member = discord.Object(member_id)
+        await ctx.guild.ban(user=member, reason=reason)
+        await ctx.send(f'Banned user with ID of `{member_id}`')
 
     @command()
     async def purge(self, ctx, count: int):
