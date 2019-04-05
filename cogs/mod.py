@@ -68,7 +68,7 @@ class Mod:
         """Ban a user."""
 
         if discord.utils.get(ctx.guild.members, id=member_id) is not None:
-            await ctx.send("Cannot hackban member who is currently in the server.\nPlease use `-ban [member]` instead!`")
+            await ctx.send(f"Cannot hackban member who is currently in the server.\nPlease use `-ban [member]` instead!`")
             return
 
         member = discord.Object(member_id)
@@ -116,14 +116,12 @@ class Mod:
         else:
             await ctx.send(self.get_rule()[f"{rule}"])
 
-    @command(name="presence")
-    async def presence(self, ctx, game: str, presType: int):
-
-        if(presType < 4 and presType >= 0):
-            await client.change_presence(game=discord.Game(name=game, type=presType))
-
-        
-
+    @command(name="presence", aliases=["game", "changegame"])
+    async def presence(self, ctx, *, game: str = None):
+        if(game == None):
+            await self.bot.change_presence(activity=None)
+            return
+        await self.bot.change_presence(activity=discord.Game(name=game))
 
 def setup(bot):
     bot.add_cog(Mod(bot))
