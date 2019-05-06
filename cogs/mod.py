@@ -68,7 +68,7 @@ class Mod:
         """Ban a user."""
 
         if discord.utils.get(ctx.guild.members, id=member_id) is not None:
-            await ctx.send(f"Cannot hackban member who is currently in the server.\nPlease use `-ban [member]` instead!`")
+            await ctx.send(f"Cannot hackban member who is currently in the server.\nPlease use `-ban [member]` instead!")
             return
 
         member = discord.Object(member_id)
