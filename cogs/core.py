@@ -148,31 +148,29 @@ class Core:
                 msg = f"**Do not send invites!** {message.author.mention}"
                 await message.channel.send(msg)
                 await message.delete()
-        # Lower-Case Message Checker
-        if message.content.islower():
-            member_voice = message.author.voice
-            # Lower-Case System;Start 1
-            if message.content == "cassandra can you hear me":
-                if member_voice:
-                    vc = await message.author.voice.channel.connect()
-                    source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('audio/ss1.mp3'))
-                    vc.play(source)
-                    await asyncio.sleep(4)
-                    await vc.disconnect()
-                else:
-                    await message.channel.send("Yes.")
-            # Lower-Case System;Start 2
-            elif message.content in ["cassandra are you ready to begin", "are you ready to begin"]:
-                if member_voice:
-                    vc = await message.author.voice.channel.connect()
-                    source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('audio/ss2.mp3'))
-                    vc.play(source)
-                    await asyncio.sleep(5)
-                    await vc.disconnect()
-                else:
-                    await message.channel.send("Yes,")
-                    await asyncio.sleep(1)
-                    await message.channel.send("I'm ready.")
+        member_voice = message.author.voice
+        # Lower-Case System;Start 1
+        if str(message.content).lower() in ["cassandra can you hear me", "cassandra, can you hear me?", "cassandra can you hear me?", "cassandra, can you hear me"] : # todo: replace with regex
+            if member_voice:
+                vc = await message.author.voice.channel.connect()
+                source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('audio/ss1.mp3'))
+                vc.play(source)
+                await asyncio.sleep(4)
+                await vc.disconnect()
+            else:
+                await message.channel.send("Yes.")
+        # Lower-Case System;Start 2
+        elif str(message.content).lower() in ["cassandra are you ready to begin", "are you ready to begin", "cassandra, are you ready to begin", "cassandra are you ready to begin?", "cassandra, are you ready to begin?"]: # todo: replace with regex
+            if member_voice:
+                vc = await message.author.voice.channel.connect()
+                source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('audio/ss2.mp3'))
+                vc.play(source)
+                await asyncio.sleep(5)
+                await vc.disconnect()
+            else:
+                await message.channel.send("Yes,")
+                await asyncio.sleep(1)
+                await message.channel.send("I'm ready.")
         # Archiver
         if message.author.id in self.blacklist:
             await message.channel.send(f'Thank you for your time at {message.guild.name}. Understandable, have a nice day, {message.author.mention}.')
