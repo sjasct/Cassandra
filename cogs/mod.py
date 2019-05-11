@@ -49,6 +49,17 @@ class Mod:
             await asyncio.sleep(5)
             await member.ban(reason=reason, delete_message_days=0)
             await ctx.send(f'Banned {member} | Reason: {reason}')
+    
+    @command()
+    async def unban(self, ctx, id: int):
+        """Ban a user."""
+        user = self.bot.get_user(id)
+        try:
+            await ctx.guild.unban(user)
+        except Exception as e:
+            return await ctx.send(str(e))
+        else:
+            await ctx.send(f"Unbanned {user.name}")
 
     @command()
     async def softban(self, ctx, member: discord.Member, *, reason: str="Violation of one or more rules."):
