@@ -56,8 +56,8 @@ class Server:
             "battlenet": utils.get(ctx.guild.roles, name="battlenet"),
             "gamenight": utils.get(ctx.guild.roles, name="gamenight"),
             "helpliner": utils.get(ctx.guild.roles, name="helpliner"),
-            "politics": utils.get(ctx.guild.roles, name="politics opt-in"),
-            "support": utils.get(ctx.guild.roles, name="support opt-in") 
+            "politics": utils.get(ctx.guild.roles, name="Politics Opt-In"),
+            "support": utils.get(ctx.guild.roles, name="Support Opt-In") 
         }
 
         self.configurable_roles = [
