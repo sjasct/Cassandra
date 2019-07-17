@@ -58,7 +58,7 @@ class Server:
             "helpliner": utils.get(ctx.guild.roles, name="helpliner"),
             "politics": utils.get(ctx.guild.roles, name="Politics Opt-In"),
             "support": utils.get(ctx.guild.roles, name="Support Opt-In") ,
-            "archives": utils.get(ctx.guild.role, name="Archivist")
+            "archives": utils.get(ctx.guild.roles, name="Archivist")
         }
 
         self.configurable_roles = [
