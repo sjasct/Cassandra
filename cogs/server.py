@@ -57,7 +57,8 @@ class Server:
             "gamenight": utils.get(ctx.guild.roles, name="gamenight"),
             "helpliner": utils.get(ctx.guild.roles, name="helpliner"),
             "politics": utils.get(ctx.guild.roles, name="Politics Opt-In"),
-            "support": utils.get(ctx.guild.roles, name="Support Opt-In") 
+            "support": utils.get(ctx.guild.roles, name="Support Opt-In") ,
+            "archives": utils.get(ctx.guild.role, name="Archivist")
         }
 
         self.configurable_roles = [
@@ -88,7 +89,7 @@ class Server:
         if role in self.self_assignable_roles:
             roleobj = self.self_assignable_roles[role]
             await ctx.author.add_roles(roleobj, reason="Used role command")
-            await ctx.send(f"Added role `{roleobj}` to {ctx.author.mention}'")
+            await ctx.send(f"Added role `{roleobj}` to {ctx.author.mention}")
         else:
             await ctx.send(
                 f"""
