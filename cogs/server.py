@@ -51,12 +51,14 @@ class Server:
             self._nasa_key = bot.api_keys["NASA"]
     
     def populateRoleLists(self, ctx):
-        self.self_assignable_roles = [
-            utils.get(ctx.guild.roles, name="ping"),
-            utils.get(ctx.guild.roles, name="battlenet"),
-            utils.get(ctx.guild.roles, name="gamenight"),
-            utils.get(ctx.guild.roles, name="helpliner")
-        ]
+        self.self_assignable_roles = {
+            "ping": utils.get(ctx.guild.roles, name="ping"),
+            "battlenet": utils.get(ctx.guild.roles, name="battlenet"),
+            "gamenight": utils.get(ctx.guild.roles, name="gamenight"),
+            "helpliner": utils.get(ctx.guild.roles, name="helpliner"),
+            "politics": utils.get(ctx.guild.roles, name="politics opt-in"),
+            "support": utils.get(ctx.guild.roles, name="support opt-in") 
+        }
 
         self.configurable_roles = [
             utils.get(ctx.guild.roles, name="ping"),
@@ -74,7 +76,7 @@ class Server:
         name="add",
         aliases=["+"]
     )
-    async def add_(self, ctx, role: Role):
+    async def add_(self, ctx, role):
         """
         Adds a role.
         If the argument given is not a valid role in the guild, it will safely ignore it.
@@ -84,8 +86,9 @@ class Server:
             self.populateRoleLists(ctx)
 
         if role in self.self_assignable_roles:
-            await ctx.author.add_roles(role, reason="Used role command")
-            await ctx.send(f"Added `{role}` to {ctx.author.mention}.")
+            roleobj = self.self_assignable_roles[role]
+            await ctx.author.add_roles(roleobj, reason="Used role command")
+            await ctx.send(f"Added role `{roleobj}` to {ctx.author.mention}'")
         else:
             await ctx.send(
                 f"""
@@ -98,7 +101,7 @@ class Server:
         name="remove",
         aliases=["-"]
     )
-    async def remove_(self, ctx, role: Role):
+    async def remove_(self, ctx, role):
         """
         Removes a role.
         If the argument given is not a valid role in the guild, it will safely ignore it.
@@ -109,8 +112,9 @@ class Server:
             self.populateRoleLists(ctx)
 
         if role in self.self_assignable_roles:
-            await ctx.author.remove_roles(role, reason="Used role command")
-            await ctx.send(f"Removed `{role}` from {ctx.author.mention}.")
+            roleobj = self.self_assignable_roles[role]
+            await ctx.author.remove_roles(roleobj, reason="Used role command")
+            await ctx.send(f"Removed `{roleobj}` role from {ctx.author.mention}.")
         else:
             await ctx.send(
                 f"""

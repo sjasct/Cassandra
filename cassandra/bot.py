@@ -60,7 +60,7 @@ class CassandraBase(commands.Bot):
         def get_prefix():
             """Fetches all known prefixes."""
             prefixes = ["-",
-                        "Cassandra "]
+                        "Cassandra ", "cassandra "]
             return commands.when_mentioned_or(*prefixes)
 
         def get_description():
