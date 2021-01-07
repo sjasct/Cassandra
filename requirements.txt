@@ -24,6 +24,6 @@ websocket-client==0.44.0
 websockets==5.0.1
 yarl==0.13.0
 youtube-dl==2017.7.15
-lxml==3.4
+lxml==4.6.2
 psutil
 PyGithub
